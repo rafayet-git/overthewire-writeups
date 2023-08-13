@@ -199,3 +199,108 @@ bandit9@bandit:~$ strings data.txt | grep ==
 ========== is
 ========== G7w8LIi6J3kTb8A7j9LgrywtEUlyyp6s
 ```
+# 10
+```
+❯ ssh bandit10@bandit.labs.overthewire.org -p 2220
+bandit10@bandit:~$ ls
+data.txt
+bandit10@bandit:~$ cat data.txt 
+VGhlIHBhc3N3b3JkIGlzIDZ6UGV6aUxkUjJSS05kTllGTmI2blZDS3pwaGxYSEJNCg==
+bandit10@bandit:~$ base64 -d data.txt 
+The password is 6zPeziLdR2RKNdNYFNb6nVCKzphlXHBM
+```
+# 11
+```
+❯ ssh bandit11@bandit.labs.overthewire.org -p 2220
+bandit11@bandit:~$ ls
+data.txt
+bandit11@bandit:~$ cat data.txt 
+Gur cnffjbeq vf WIAOOSFzMjXXBC0KoSKBbJ8puQm5lIEi
+bandit11@bandit:~$ cat data.txt | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+The password is JVNBBFSmZwKKOP0XbFXOoW8chDz5yVRv
+```
+# 12
+```
+❯ ssh bandit12@bandit.labs.overthewire.org -p 2220
+bandit12@bandit:~$ ls
+data.txt
+bandit12@bandit:~$ mkdir /tmp/stuff
+bandit12@bandit:~$ cp data.txt /tmp/stuff
+bandit12@bandit:~$ cd /tmp/stuff
+bandit12@bandit:/tmp/stuff$ cat data.txt 
+00000000: 1f8b 0808 2773 4564 0203 6461 7461 322e  ....'sEd..data2.
+...
+bandit12@bandit:/tmp/stuff$ xxd -r data.txt binary.gz
+bandit12@bandit:/tmp/stuff$ gzip -d binary.gz
+bandit12@bandit:/tmp/stuff$ xxd binary 
+00000000: 425a 6839 3141 5926 5359 7b4f 965f 0000  BZh91AY&SY{O._..
+...
+bandit12@bandit:/tmp/stuff$ bzip2 -d binary
+bzip2: Can't guess original name for binary -- using binary.out
+bandit12@bandit:/tmp/stuff$ xxd binary.out 
+00000000: 1f8b 0808 2773 4564 0203 6461 7461 342e  ....'sEd..data4.
+...
+bandit12@bandit:/tmp/stuff$ mv binary.out binary.gz
+bandit12@bandit:/tmp/stuff$ gzip -d binary.gz
+bandit12@bandit:/tmp/stuff$ xxd binary | head      
+00000000: 6461 7461 352e 6269 6e00 0000 0000 0000  data5.bin.......
+...
+bandit12@bandit:/tmp/stuff$ tar -xf binary   
+bandit12@bandit:/tmp/stuff$ ls
+binary  data5.bin  data.txt
+bandit12@bandit:/tmp/stuff$ xxd data5.bin | head
+00000000: 6461 7461 362e 6269 6e00 0000 0000 0000  data6.bin.......
+...
+bandit12@bandit:/tmp/stuff$ tar -xf data5.bin
+bandit12@bandit:/tmp/stuff$ xxd data6.bin
+00000000: 425a 6839 3141 5926 5359 4911 0aa4 0000  BZh91AY&SYI.....
+...
+bandit12@bandit:/tmp/stuff$ bzip2 -d data6.bin
+bzip2: Can't guess original name for data6.bin -- using data6.bin.out
+bandit12@bandit:/tmp/stuff$ xxd data6.bin.out | head
+00000000: 6461 7461 382e 6269 6e00 0000 0000 0000  data8.bin.......
+...
+bandit12@bandit:/tmp/stuff$ tar -xf data6.bin.out 
+bandit12@bandit:/tmp/stuff$ ls
+binary  data5.bin  data6.bin.out  data8.bin  data.txt
+bandit12@bandit:/tmp/stuff$ xxd data8.bin 
+00000000: 1f8b 0808 2773 4564 0203 6461 7461 392e  ....'sEd..data9.
+...
+bandit12@bandit:/tmp/stuff$ mv data8.bin data.gz
+bandit12@bandit:/tmp/stuff$ gzip -d data.gz
+bandit12@bandit:/tmp/stuff$ cat data
+The password is wbWdlBxEir4CaE8LaPhauuOo6pwRmrDw
+```
+# 13
+```
+❯ ssh bandit13@bandit.labs.overthewire.org -p 2220
+bandit13@bandit:~$ ls
+sshkey.private
+bandit13@bandit:~$ exit
+logout
+Connection to bandit.labs.overthewire.org closed.
+❯ scp -P 2220 bandit13@bandit.labs.overthewire.org:sshkey.private .
+                         _                     _ _ _   
+                        | |__   __ _ _ __   __| (_) |_ 
+                        | '_ \ / _` | '_ \ / _` | | __|
+                        | |_) | (_| | | | | (_| | | |_ 
+                        |_.__/ \__,_|_| |_|\__,_|_|\__|
+                                                       
+
+                      This is an OverTheWire game server. 
+            More information on http://www.overthewire.org/wargames
+
+bandit13@bandit.labs.overthewire.org's password: 
+sshkey.private                                                                100% 1679     7.7KB/s   00:00
+❯ chmod 0400 sshkey.private
+```
+# 14
+```
+❯ ssh bandit14@bandit.labs.overthewire.org -p 2220 -i sshkey.private
+bandit14@bandit:~$  cat /etc/bandit_pass/bandit14
+fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq
+bandit14@bandit:~$ nc localhost 30000
+fGrHPx402xGC7U7rXKDaxiWFTOiF0ENq
+Correct!
+jN2kgmIXJ6fShzhT2avhotn4Zcka6tnt
+```

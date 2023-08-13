@@ -1,5 +1,7 @@
 # overthewire-writeups
-Writeups for various OverTheWire.org wargames
+Writeups for OverTheWire.org wargames
+
+I made this mainly to track my own progress. 
 
 [Link to website](https://overthewire.org/wargames/)
 
