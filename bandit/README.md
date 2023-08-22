@@ -536,3 +536,192 @@ bandit27-do  text.txt
 bandit26@bandit:~$ ./bandit27-do cat /etc/bandit_pass/bandit27
 YnQpBuifNMas1hcUFk70ZmqkhUU2EuaS
 ```
+# 27
+```
+❯ ssh bandit27@bandit.labs.overthewire.org -p 2220
+bandit27@bandit:~$ mkdir /tmp/AAAtest ;  cd /tmp/AAAtest
+andit27@bandit:/tmp/AAAtest$ git clone ssh://bandit27-git@localhost:2220/home/bandit27-git/repo
+Cloning into 'repo'...
+The authenticity of host '[localhost]:2220 ([127.0.0.1]:2220)' can't be established.
+ED25519 key fingerprint is SHA256:C2ihUBV7ihnV1wUXRb4RrEcLfXC5CXlhmAAM/urerLY.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Could not create directory '/home/bandit27/.ssh' (Permission denied).
+Failed to add the host to the list of known hosts (/home/bandit27/.ssh/known_hosts).
+                         _                     _ _ _   
+                        | |__   __ _ _ __   __| (_) |_ 
+                        | '_ \ / _` | '_ \ / _` | | __|
+                        | |_) | (_| | | | | (_| | | |_ 
+                        |_.__/ \__,_|_| |_|\__,_|_|\__|
+                                                       
+
+                      This is an OverTheWire game server. 
+            More information on http://www.overthewire.org/wargames
+
+bandit27-git@localhost's password:
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Receiving objects: 100% (3/3), done.
+bandit27@bandit:/tmp/AAAtest$ cd repo/     
+bandit27@bandit:/tmp/AAAtest/repo$ ls
+README
+bandit27@bandit:/tmp/AAAtest/repo$ cat README 
+The password to the next level is: AVanL161y9rsbcJIsFHuw35rjaOM19nR
+```
+# 28
+```
+❯ ssh bandit28@bandit.labs.overthewire.org -p 2220
+bandit28@bandit:~$ mkdir /tmp/testA2 ; cd /tmp/testA2
+bandit28@bandit:/tmp/testA2$ git clone ssh://bandit28-git@localhost:2220/home/bandit28-git/repo
+Cloning into 'repo'...
+bandit28@bandit:/tmp/testA2$ cd repo/
+bandit28@bandit:/tmp/testA2/repo$ ls
+README.md
+bandit28@bandit:/tmp/testA2/repo$ cat README.md 
+# Bandit Notes
+Some notes for level29 of bandit.
+
+## credentials
+
+- username: bandit29
+- password: xxxxxxxxxx
+bandit28@bandit:/tmp/testA2/repo$ git log   
+commit 899ba88df296331cc01f30d022c006775d467f28 (HEAD -> master, origin/master, origin/HEAD)
+Author: Morla Porla <morla@overthewire.org>
+Date:   Sun Apr 23 18:04:39 2023 +0000
+
+    fix info leak
+
+commit abcff758fa6343a0d002a1c0add1ad8c71b88534
+Author: Morla Porla <morla@overthewire.org>
+Date:   Sun Apr 23 18:04:39 2023 +0000
+
+    add missing data
+
+commit c0a8c3cf093fba65f4ee0e1fe2a530b799508c78
+Author: Ben Dover <noone@overthewire.org>
+Date:   Sun Apr 23 18:04:39 2023 +0000
+
+    initial commit of README.md
+bandit28@bandit:/tmp/testA2/repo$ git show 899ba88df296331cc01f30d022c006775d467f28
+commit 899ba88df296331cc01f30d022c006775d467f28 (HEAD -> master, origin/master, origin/HEAD)
+Author: Morla Porla <morla@overthewire.org>
+Date:   Sun Apr 23 18:04:39 2023 +0000
+
+    fix info leak
+
+diff --git a/README.md b/README.md
+index b302105..5c6457b 100644
+--- a/README.md
++++ b/README.md
+@@ -4,5 +4,5 @@ Some notes for level29 of bandit.
+ ## credentials
+ 
+ - username: bandit29
+-- password: tQKvmcwNYcFS6vmPHIUSI3ShmsrQZK8S
++- password: xxxxxxxxxx
+```
+# 29
+```
+❯ ssh bandit29@bandit.labs.overthewire.org -p 2220
+bandit29@bandit:~$ mkdir /tmp/testCC ; cd /tmp/testCC
+bandit29@bandit:/tmp/testCC$ git clone ssh://bandit29-git@localhost:2220/home/bandit29-git/repo
+Cloning into 'repo'...
+bandit29@bandit:/tmp/testCC$ cd repo/
+bandit29@bandit:/tmp/testCC/repo$ ls
+README.md
+bandit29@bandit:/tmp/testCC/repo$ cat README.md 
+# Bandit Notes
+Some notes for bandit30 of bandit.
+
+## credentials
+
+- username: bandit30
+- password: <no passwords in production!>
+bandit29@bandit:/tmp/testCC/repo$ git branch -r
+  origin/HEAD -> origin/master
+  origin/dev
+  origin/master
+  origin/sploits-dev
+bandit29@bandit:/tmp/testCC/repo$ git checkout dev
+Branch 'dev' set up to track remote branch 'dev' from 'origin'.
+Switched to a new branch 'dev'
+bandit29@bandit:/tmp/testCC/repo$ cat README.md 
+# Bandit Notes
+Some notes for bandit30 of bandit.
+
+## credentials
+
+- username: bandit30
+- password: xbhV3HpNGlTIdnjUrdAlPzc2L6y9EOnS
+```
+# 30
+```
+❯ ssh bandit30@bandit.labs.overthewire.org -p 2220
+bandit30@bandit:/tmp/tA2$ git clone ssh://bandit30-git@localhost:2220/home/bandit30-git/repo
+Cloning into 'repo'...
+bandit30@bandit:/tmp/tA2$ cd repo/
+bandit30@bandit:/tmp/tA2/repo$ cat README.md 
+just an epmty file... muahaha
+bandit30@bandit:/tmp/tA2/repo$ git tag
+secret
+bandit30@bandit:/tmp/tA2/repo$ git show secret
+OoffzGDlzhAlerFJ2cAiz1D41JW1Mhmt
+```
+# 31
+```
+❯ ssh bandit31@bandit.labs.overthewire.org -p 2220
+bandit31@bandit:~$ mkdir /tmp/tAA ; cd /tmp/tAA
+bandit31@bandit:/tmp/tAA$ git clone ssh://bandit31-git@localhost:2220/home/bandit31-git/repo ; cd repo/
+Cloning into 'repo'...
+bandit31@bandit:/tmp/tAA/repo$ cat README.md 
+This time your task is to push a file to the remote repository.
+
+Details:
+    File name: key.txt
+    Content: 'May I come in?'
+    Branch: master
+bandit31@bandit:/tmp/tAA/repo$ echo "May I come in?" > key.txt
+bandit31@bandit:/tmp/tAA/repo$ git add key.txt -f
+bandit31@bandit:/tmp/tAA/repo$ git commit -m "Hi"
+[master b5daa10] Hi
+ 1 file changed, 1 insertion(+)
+ create mode 100644 key.txt
+bandit31@bandit:/tmp/tAA/repo$ git push
+                         _                     _ _ _   
+                        | |__   __ _ _ __   __| (_) |_ 
+                        | '_ \ / _` | '_ \ / _` | | __|
+                        | |_) | (_| | | | | (_| | | |_ 
+                        |_.__/ \__,_|_| |_|\__,_|_|\__|
+                                                       
+
+                      This is an OverTheWire game server. 
+            More information on http://www.overthewire.org/wargames
+
+bandit31-git@localhost's password: 
+Enumerating objects: 4, done.
+Counting objects: 100% (4/4), done.
+Delta compression using up to 2 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 317 bytes | 317.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+remote: ### Attempting to validate files... ####
+remote: 
+remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+remote: 
+remote: Well done! Here is the password for the next level:
+remote: rmCBvG56y58BXzv98yZGdO7ATVL5dW8y 
+remote: 
+remote: .oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.oOo.
+remote:
+```
+# 32
+```
+❯ ssh bandit32@bandit.labs.overthewire.org -p 2220
+WELCOME TO THE UPPERCASE SHELL
+>> $0
+$ cat /etc/bandit_pass/bandit33
+odHo63fHiFqcWWJG9rLiLDtPm45KzUKy
+```
