@@ -4,7 +4,7 @@ Writeups for OverTheWire.org wargames
 | Game | Max level reached|
 | :--: |:--:|
 | Bandit | 33 |
-| Natas | 1 |
+| Natas | 6 |
 
 I made this mainly to track my own progress. 
 
