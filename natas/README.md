@@ -598,7 +598,7 @@ This website uses `strcmp()` to see if a password is the same as the actual pass
 ```
 The credentials for the next level are:
 
-Username: natas25 Password: O9QD9DZBDq1YpswiTM5oqMDaOtuZtAcx
+Username: natas25 Password: ckELKUWZUfpOv6uxS6M7lXBpBssJZ4Ws
 ```
 
 # 25
@@ -636,7 +636,7 @@ Another thing about this log is that it parses our user agent for some reason. W
 After changing our user agent and accessing the log file, we get our password in the HTML source.
 
 ```
-[29.12.2023 04::25:03] 8A506rfIAXbKKk68yJeuTuRq4UfcK70k
+[29.12.2023 04::25:03] cVXXwxMS3Y26n5UZU89QgpGmWCelaQlE
 ```
 
 # 26
