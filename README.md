@@ -5,7 +5,7 @@ Writeups for OverTheWire.org wargames
 | Game   | Max level reached | Complete           |
 |:------:|:-----------------:| ------------------ |
 | Bandit | 33                | :white_check_mark: |
-| Natas  | 29                |                    |
+| Natas  | 32                |                    |
 
 I made this mainly to track my own progress. 
 

