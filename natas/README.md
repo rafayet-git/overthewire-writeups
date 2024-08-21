@@ -1007,5 +1007,5 @@ URL:      http://natas34.natas.labs.overthewire.org
 ```
 
 ```
-
+Congratulations! You have reached the end... for now. 
 ```
