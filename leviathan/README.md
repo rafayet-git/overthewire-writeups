@@ -101,7 +101,7 @@ This shows that the program uses system calls, in this case it calls `cat`.
 
 The problem with system calls in a program is that they do not preserve the true file names that we input, such as filenames that include spaces. For example, if i make a file called `a b` and run `ltrace ./printfile "a b"` , the program will call `access("a b")` , which will return true, but then it will run `system(/bin/cat a b)`. This will make cat attempt to print contents of `a` and `b`, both files that do not exist.
 
-I used this approach to get the password for the next level. To make things easier, I made a temp folder in `/tmp` and gave it full access perms to everyone else, then made a symlink to `/etc/leviathan_pass/leviathan3` as `pwfile`. I then made another file called `pwfile no`, then run the program using that filename.
+I used this approach to get the password for the next level. To make things easier, I made a temp folder in `/tmp` and gave it full access perms to everyone else, then made a symlink to `/etc/leviathan_pass/leviathan3` as `pwfile` (A symlink is basically a shortcut to the original file, allowing us to treat it like it's in a different location). I then made another file called `pwfile no`, then run the program using that filename.
 
 ```
 leviathan2@gibson:~$ ls -la
@@ -126,4 +126,150 @@ f0n8h2iWLP
 ```
 Username: leviathan3
 Password: f0n8h2iWLP
+```
+
+The solution is very similar to level 2. We have a SUID executable `level3` which asks for a password (I guess this is a trend now). Running ltrace on it shows the strcmp function that compares our password with the correct password: `snlprintf`. Entering that password will give us access to a shell, which we can then do `cat /etc/leviathan_pass/leviathan4`.
+
+```
+leviathan3@gibson:~$ ls -la
+total 40
+drwxr-xr-x  2 root       root        4096 Jul 17 15:57 .
+drwxr-xr-x 83 root       root        4096 Jul 17 15:59 ..
+-rw-r--r--  1 root       root         220 Mar 31 08:41 .bash_logout
+-rw-r--r--  1 root       root        3771 Mar 31 08:41 .bashrc
+-r-sr-x---  1 leviathan4 leviathan3 18096 Jul 17 15:57 level3
+-rw-r--r--  1 root       root         807 Mar 31 08:41 .profile
+leviathan3@gibson:~$ ltrace ./level3 
+__libc_start_main(0x80490ed, 1, 0xffffd434, 0 <unfinished ...>
+strcmp("h0no33", "kakaka")                                             = -1
+printf("Enter the password> ")                                         = 20
+fgets(Enter the password> test
+"box\n", 256, 0xf7fae5c0)                                        = 0xffffd20c
+strcmp("test\n", "snlprintf\n")                                         = -1
+puts("bzzzzzzzzap. WRONG"bzzzzzzzzap. WRONG
+)
++++ exited (status 0) +++
+leviathan3@gibson:~$ ./level3 
+Enter the password> snlprintf
+[You've got shell]!
+$ whoami
+leviathan4
+$ cat /etc/leviathan_pass/leviathan4
+WG1egElCvO
+```
+
+# 4
+
+```
+Username: leviathan4
+Password: WG1egElCvO
+```
+
+At first there didn't seem to be anything at the home directory, but when doing `ls -la` I noticed there is a hidden directory `.trash`. Inside it contains an executable called `bin`. Running it gives us text, but it seems to be in binary format. We need to convert it to ASCII text to get us the password: `0dyxT7F4QD`
+
+```
+leviathan4@gibson:~$ ls -la
+total 24
+drwxr-xr-x  3 root root       4096 Jul 17 15:57 .
+drwxr-xr-x 83 root root       4096 Jul 17 15:59 ..
+-rw-r--r--  1 root root        220 Mar 31 08:41 .bash_logout
+-rw-r--r--  1 root root       3771 Mar 31 08:41 .bashrc
+-rw-r--r--  1 root root        807 Mar 31 08:41 .profile
+dr-xr-x---  2 root leviathan4 4096 Jul 17 15:57 .trash
+leviathan4@gibson:~$ cd .trash/
+leviathan4@gibson:~/.trash$ ls
+bin
+leviathan4@gibson:~/.trash$ ./bin 
+00110000 01100100 01111001 01111000 01010100 00110111 01000110 00110100 01010001 01000100 00001010 
+```
+
+# 5
+
+```
+Username: leviathan5
+Password: 0dyxT7F4QD
+```
+
+There's an executable called `leviathan5`. When running it, it says `Cannot find /tmp/file.log`. Since it looks like that file doesn't exist, I made my own by running `echo "Hi..." > /tmp/file.log` and ran the program again. This time. it printed the contents of the file. It also seems to delete the file, since running it again gives us the same error as before.
+
+Since it prints the file, I decided to put a symlink to `/etc/leviathan_pass/leviathan6`, just like what we did in level 2. Now when we run it again. we get the password.
+
+```
+leviathan5@gibson:~$ ls -la
+total 36
+drwxr-xr-x  2 root       root        4096 Jul 17 15:57 .
+drwxr-xr-x 83 root       root        4096 Jul 17 15:59 ..
+-rw-r--r--  1 root       root         220 Mar 31 08:41 .bash_logout
+-rw-r--r--  1 root       root        3771 Mar 31 08:41 .bashrc
+-r-sr-x---  1 leviathan6 leviathan5 15140 Jul 17 15:57 leviathan5
+-rw-r--r--  1 root       root         807 Mar 31 08:41 .profile
+leviathan5@gibson:~$ ./leviathan5 
+Cannot find /tmp/file.log
+leviathan5@gibson:~$ ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
+leviathan5@gibson:~$ ./leviathan5 
+szo7HDB88w
+```
+
+# 6
+
+```
+Username: leviathan6
+Password: szo7HDB88w
+```
+
+We have an executable `leviathan6` that asks for a four-digit number. However, doing the usual ltrace with this executable does not give any useful information, as the only library function it uses is `atoi`, which just converts strings to integers.
+
+I decided the best way to solve this level is through brute forcing the code, by making a bash for loop. This is what I did:
+
+```bash
+for i in {0000..9999}
+do
+    echo $i
+    ./leviathan6 $i
+done
+```
+
+Eventually it'll stop at the correct code when it runs a shell as leviathan6. This will show that our code is `7123`. We can print out the code by doing `cat /etc/leviathan_pass/leviathan7`
+
+```
+leviathan6@gibson:~$ ls -la
+total 36
+drwxr-xr-x  2 root       root        4096 Jul 17 15:57 .
+drwxr-xr-x 83 root       root        4096 Jul 17 15:59 ..
+-rw-r--r--  1 root       root         220 Mar 31 08:41 .bash_logout
+-rw-r--r--  1 root       root        3771 Mar 31 08:41 .bashrc
+-r-sr-x---  1 leviathan7 leviathan6 15032 Jul 17 15:57 leviathan6
+-rw-r--r--  1 root       root         807 Mar 31 08:41 .profile
+leviathan6@gibson:~$ for i in {0000..9999}
+do
+    echo $i
+    ./leviathan6 $i
+done
+0000
+Wrong
+0001
+...
+Wrong
+7123
+$ cat /etc/leviathan_pass/leviathan7
+qEs5Io5yM8
+```
+
+I could've done without bruteforcing by using the GNU debugger to figure out the code, but for the purposes of this writeup (and to match the beginner diffuclty of Leviathan), it would've been simpler and easier to just brute force it.
+
+# 7
+
+```
+Username: leviathan7
+Password: qEs5Io5yM8
+```
+
+It looks like that's the end of the wargame.
+
+```
+leviathan7@gibson:~$ ls
+CONGRATULATIONS
+leviathan7@gibson:~$ cat CONGRATULATIONS 
+Well Done, you seem to have used a *nix system before, now try something more serious.
+(Please don't post writeups, solutions or spoilers about the games on the web. Thank you!)
 ```
