@@ -26,14 +26,14 @@ leviathan0@gibson:~$ cd .backup/
 leviathan0@gibson:~/.backup$ ls
 bookmarks.html
 leviathan0@gibson:~/.backup$ cat bookmarks.html | grep leviathan
-<DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3QJ3TgzHDq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
+<DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3Q...Dq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
 ```
 
 # 1
 
 ```
 Username: leviathan1
-Password: 3QJ3TgzHDq
+Password: 3Q...Dq
 ```
 
 Doing `ls -la` shows that there is a binary file called `check`. However, this file has a set SUID, which means that whenever we run it, it will always run as it's owner, that being `leviathan2`.
@@ -71,14 +71,14 @@ puts("Wrong password, Good Bye ..."Wrong password, Good Bye ...
 leviathan1@gibson:~$ ./check 
 password: sex
 $ cat /etc/leviathan_pass/leviathan2
-NsN1HwFoyN
+Ns...yN
 ```
 
 # 2
 
 ```
 Username: leviathan2
-Password: NsN1HwFoyN
+Password: Ns...yN
 ```
 
 Just like the previous level, there is a program with a SUID to the next level's user.
@@ -117,7 +117,7 @@ leviathan2@gibson:~$ chmod 777 /tmp/test532
 leviathan2@gibson:~$ ln -s /etc/leviathan_pass/leviathan3 /tmp/test532/pwfile 
 leviathan2@gibson:~$ touch /tmp/test532/"pwfile no"
 leviathan2@gibson:~$ ./printfile /tmp/test532/"pwfile no"
-f0n8h2iWLP
+f0...LP
 /bin/cat: no: No such file or directory
 ```
 
@@ -125,7 +125,7 @@ f0n8h2iWLP
 
 ```
 Username: leviathan3
-Password: f0n8h2iWLP
+Password: f0...LP
 ```
 
 The solution is very similar to level 2. We have a SUID executable `level3` which asks for a password (I guess this is a trend now). Running ltrace on it shows the strcmp function that compares our password with the correct password: `snlprintf`. Entering that password will give us access to a shell, which we can then do `cat /etc/leviathan_pass/leviathan4`.
@@ -155,17 +155,17 @@ Enter the password> snlprintf
 $ whoami
 leviathan4
 $ cat /etc/leviathan_pass/leviathan4
-WG1egElCvO
+WG...vO
 ```
 
 # 4
 
 ```
 Username: leviathan4
-Password: WG1egElCvO
+Password: WG...vO
 ```
 
-At first there didn't seem to be anything at the home directory, but when doing `ls -la` I noticed there is a hidden directory `.trash`. Inside it contains an executable called `bin`. Running it gives us text, but it seems to be in binary format. We need to convert it to ASCII text to get us the password: `0dyxT7F4QD`
+At first there didn't seem to be anything at the home directory, but when doing `ls -la` I noticed there is a hidden directory `.trash`. Inside it contains an executable called `bin`. Running it gives us text, but it seems to be in binary format. We need to convert it to ASCII text to get us the password, using any [binary to text translator](https://www.rapidtables.com/convert/number/binary-to-ascii.html) of your choice.
 
 ```
 leviathan4@gibson:~$ ls -la
@@ -187,7 +187,7 @@ leviathan4@gibson:~/.trash$ ./bin
 
 ```
 Username: leviathan5
-Password: 0dyxT7F4QD
+Password: 0d...QD
 ```
 
 There's an executable called `leviathan5`. When running it, it says `Cannot find /tmp/file.log`. Since it looks like that file doesn't exist, I made my own by running `echo "Hi..." > /tmp/file.log` and ran the program again. This time. it printed the contents of the file. It also seems to delete the file, since running it again gives us the same error as before.
@@ -207,14 +207,14 @@ leviathan5@gibson:~$ ./leviathan5
 Cannot find /tmp/file.log
 leviathan5@gibson:~$ ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
 leviathan5@gibson:~$ ./leviathan5 
-szo7HDB88w
+sz...8w
 ```
 
 # 6
 
 ```
 Username: leviathan6
-Password: szo7HDB88w
+Password: sz...8w
 ```
 
 We have an executable `leviathan6` that asks for a four-digit number. However, doing the usual ltrace with this executable does not give any useful information, as the only library function it uses is `atoi`, which just converts strings to integers.
@@ -252,7 +252,7 @@ Wrong
 Wrong
 7123
 $ cat /etc/leviathan_pass/leviathan7
-qEs5Io5yM8
+qE...M8
 ```
 
 I could've done without bruteforcing by using the GNU debugger to figure out the code, but for the purposes of this writeup (and to match the beginner diffuclty of Leviathan), it would've been simpler and easier to just brute force it.
@@ -261,7 +261,7 @@ I could've done without bruteforcing by using the GNU debugger to figure out the
 
 ```
 Username: leviathan7
-Password: qEs5Io5yM8
+Password: qE...M8
 ```
 
 It looks like that's the end of the wargame.

