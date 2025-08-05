@@ -1,12 +1,15 @@
 # overthewire-writeups
 
+FINAL UPDATE: I am going to post future writeups to [my blog site](https://hos.sh/tags/#ctf). This repo probably won't be updated in the future. I might refresh the levels I've completed here. 
+
 Writeups for OverTheWire.org wargames
 
 | Game                                                                                 | Max level reached | Complete           |
 |:------------------------------------------------------------------------------------:|:-----------------:| ------------------ |
 | [Bandit](https://github.com/rafayet-git/overthewire-writeups/tree/main/bandit)       | 33                | :white_check_mark: |
-| [Natas](https://github.com/rafayet-git/overthewire-writeups/tree/main/natas)         | 33               | :white_check_mark: |
+| [Natas](https://github.com/rafayet-git/overthewire-writeups/tree/main/natas)         | 33                | :white_check_mark: |
 | [Leviathan](https://github.com/rafayet-git/overthewire-writeups/tree/main/leviathan) | 7                 | :white_check_mark: |
+| [Narnia](https://hos.sh/posts/overthewire-narnia-writeup)                            | 9                 | :white_check_mark: |
 
 I made this mainly to track my own progress, but I've also included my own thinking process and further context for each problem. Hopefully it'll also help you learn how to solve similar problems, including ones outside of Overthewire. 
 
